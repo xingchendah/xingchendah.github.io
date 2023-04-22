@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ai-但不是真正的ai</title>
+    <h1 style=color:aqua>欢迎进入AI不智能</h1>
+    <p style=color:aquamarine>支持的文字：你好  你在干啥？  python</p>
+</head>
+<body>
+    <button class="button button1" onclick="f()">您尚未登录，点我登录</button>
+    <br>
+    <input id="s" class="input">
+    <button onclick="d()" class="button button1">确定</button>
+    <p id="sss" style=color:blueviolet></p>
+    
+</body>
+</html>
+<script>
+    function d(){
+        var a = document.getElementById("s").value
+        if (a == '你好'){
+            document.getElementById("sss").innerHTML="你好！";
+        }
+        if (a == '你在干啥？'){
+            document.getElementById("sss").innerHTML="我在陪你聊天呀";
+        }
+        if (a == 'python'){
+            document.getElementById("sss").innerHTML="下面将为您介绍python 加载中...";
+            setTimeout(myMessage, 5000);
+        }
+
+    }
+    function myMessage(){
+        document.getElementById("sss").innerHTML="Python由荷兰数学和计算机科学研究学会的吉多·范罗苏姆于1990年代初设计，作为一门叫做ABC语言的替代品。 [1]  Python提供了高效的高级数据结构，还能简单有效地面向对象编程。Python语法和动态类型，以及解释型语言的本质，使它成为多数平台上写脚本和快速开发应用的编程语言， [2]  随着版本的不断更新和语言新功能的添加，逐渐被用于独立的、大型项目的开发。 [3] ython解释器易于扩展，可以使用C语言或C++（或者其他可以通过C调用的语言）扩展新的功能和数据类型。 [4]  Python也可用于可定制化软件中的扩展程序语言。Python丰富的标准库，提供了适用于各个主要系统平台的源码或机器码";
+    }
+    function f(){
+        window.alert("Error（尚未开发）")
+    }
+
+</script>
+<style>
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.button {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #4CAF50;
+}
+.button1:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+.input
+{
+	border:2px solid #a1a1a1;
+	padding:10px 40px; 
+	background:#dddddd;
+	width:300px;
+	border-radius:25px;
+}
+body
+{
+	background-color:#349484;
+}
+</style>
+</style>
