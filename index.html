@@ -1,81 +1,222 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ai-但不是真正的ai</title>
-    <h1 style=color:aqua>欢迎进入AI不智能</h1>
-    <p style=color:aquamarine>支持的文字：你好  你在干啥？  python</p>
+    <title>往事随风的青春博客 | 记录Code每一刻</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff85a2;
+            --secondary-blue: #87ceeb;
+            --accent-green: #a8e6cf;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            z-index: -1;
+        }
+
+        .blog-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .blog-card a {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .blog-card-content {
+            position: relative;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(255, 133, 162, 0.2);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 4px; }
+    </style>
 </head>
-<body>
-    <button class="button button1" onclick="f()">您尚未登录，点我登录</button>
-    <br>
-    <input id="s" class="input">
-    <button onclick="d()" class="button button1">确定</button>
-    <p id="sss" style=color:blueviolet></p>
-    
+<body class="font-sans">
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 导航栏 -->
+    <nav class="bg-white/95 backdrop-blur-lg fixed w-full top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-xl font-bold text-gray-900">
+                    <a href="/">往事随风</a>
+                </div>
+                <div class="space-x-4">
+                    <a href="#about" class="text-gray-600 hover:text-primary-pink transition-colors">关于我</a>
+                    <a href="#articles" class="text-gray-600 hover:text-primary-pink transition-colors">文章</a>
+                    <a href="#contact" class="text-gray-600 hover:text-primary-pink transition-colors">联系</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 头部简介 -->
+    <header class="min-h-screen flex items-center pt-16">
+        <div class="container mx-auto px-4 text-center">
+            <div data-aos="fade-up" data-aos-delay="200">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+                    这里是往事随风的<br>「Code」
+                </h1>
+                <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+                    记录Code的妙想 | 分享学习成长的小确幸 | 收藏每一个闪闪发光的日常
+                </p>
+                <div class="flex justify-center space-x-4 mb-12">
+                    <a href="#articles" class="bg-primary-pink text-white px-6 py-2 rounded-lg hover:bg-pink-500 transition-colors">
+                        查看最新文章
+                    </a>
+                    <a href="#about" class="border border-primary-pink text-primary-pink px-6 py-2 rounded-lg hover:bg-pink-50 transition-colors">
+                        了解更多
+                    </a>
+                </div>
+                <img src="https://picsum.photos/800/400?random=1" alt="博客封面" 
+                     class="rounded-2xl shadow-lg mx-auto w-full md:w-4/5">
+            </div>
+        </div>
+    </header>
+
+    <!-- 文章列表 -->
+    <section id="articles" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center" data-aos="fade-up">
+                最近更新
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 文章卡片1 -->
+                <div class="blog-card bg-white rounded-2xl p-6" data-aos="fade-up" data-aos-delay="100">
+                    <a href="article.html?id=1"></a>
+                    <div class="blog-card-content">
+                        <div class="h-40 rounded-lg overflow-hidden mb-4">
+                            <img src="https://picsum.photos/400/300?random=2" 
+                                 alt="文章图" 
+                                 class="w-full h-full object-cover transition-transform hover:scale-105">
+                        </div>
+                        <h3 class="font-semibold text-xl mb-2">暂未更新</h3>
+                        <p class="text-gray-600 text-sm mb-4">暂未更新</p>
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <span>2025-05-08</span>
+                            <span><i class="fas fa-comment-dots"></i> 23</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 文章卡片2 -->
+                <div class="blog-card bg-white rounded-2xl p-6" data-aos="fade-up" data-aos-delay="200">
+                    <a href="py.html?id=2"></a>
+                    <div class="blog-card-content">
+                        <div class="h-40 rounded-lg overflow-hidden mb-4">
+                            <img src="https://picsum.photos/400/300?random=3" 
+                                 alt="文章图" 
+                                 class="w-full h-full object-cover transition-transform hover:scale-105">
+                        </div>
+                        <h3 class="font-semibold text-xl mb-2">Python递归函数</h3>
+                        <p class="text-gray-600 text-sm mb-4">有关python</p>
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <span>2025-05-06</span>
+                            <span><i class="fas fa-comment-dots"></i> 18</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 文章卡片3 -->
+                <div class="blog-card bg-white rounded-2xl p-6" data-aos="fade-up" data-aos-delay="300">
+                    <a href="article.html?id=3"></a>
+                    <div class="blog-card-content">
+                        <div class="h-40 rounded-lg overflow-hidden mb-4">
+                            <img src="https://picsum.photos/400/300?random=4" 
+                                 alt="文章图" 
+                                 class="w-full h-full object-cover transition-transform hover:scale-105">
+                        </div>
+                        <h3 class="font-semibold text-xl mb-2">暂未更新</h3>
+                        <p class="text-gray-600 text-sm mb-4">暂未更新</p>
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <span>2025-05-03</span>
+                            <span><i class="fas fa-comment-dots"></i> 31</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-white/95 backdrop-blur-lg py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-4">
+                <a href="https://weibo.com" class="text-gray-600 hover:text-primary-pink mx-2">
+                    <i class="fab fa-weibo fa-2x"></i>
+                </a>
+                <a href="https://zhihu.com" class="text-gray-600 hover:text-primary-pink mx-2">
+                    <i class="fab fa-zhihu fa-2x"></i>
+                </a>
+                <a href="https://github.com" class="text-gray-600 hover:text-primary-pink mx-2">
+                    <i class="fab fa-github fa-2x"></i>
+                </a>
+            </div>
+            <p class="text-sm text-gray-500">© 2025 往事随风的青春博客</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // 初始化粒子效果
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80 },
+                color: { value: ["#ff85a2", "#87ceeb", "#a8e6cf"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ddd",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: { enable: true, speed: 2 }
+            }
+        });
+
+        // 初始化滚动动画
+        AOS.init({
+            duration: 800,
+            offset: 100,
+            once: true
+        });
+
+        // 卡片点击效果
+        document.querySelectorAll('.blog-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const link = this.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-<script>
-    function d(){
-        var a = document.getElementById("s").value
-        if (a == '你好'){
-            document.getElementById("sss").innerHTML="你好！";
-        }
-        if (a == '你在干啥？'){
-            document.getElementById("sss").innerHTML="我在陪你聊天呀";
-        }
-        if (a == 'python'){
-            document.getElementById("sss").innerHTML="下面将为您介绍python 加载中...";
-            setTimeout(myMessage, 5000);
-        }
-
-    }
-    function myMessage(){
-        document.getElementById("sss").innerHTML="Python由荷兰数学和计算机科学研究学会的吉多·范罗苏姆于1990年代初设计，作为一门叫做ABC语言的替代品。 [1]  Python提供了高效的高级数据结构，还能简单有效地面向对象编程。Python语法和动态类型，以及解释型语言的本质，使它成为多数平台上写脚本和快速开发应用的编程语言， [2]  随着版本的不断更新和语言新功能的添加，逐渐被用于独立的、大型项目的开发。 [3] ython解释器易于扩展，可以使用C语言或C++（或者其他可以通过C调用的语言）扩展新的功能和数据类型。 [4]  Python也可用于可定制化软件中的扩展程序语言。Python丰富的标准库，提供了适用于各个主要系统平台的源码或机器码";
-    }
-    function f(){
-        window.alert("Error（尚未开发）")
-    }
-
-</script>
-<style>
-.button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 16px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    cursor: pointer;
-}
-.button {
-    background-color: white; 
-    color: black; 
-    border: 2px solid #4CAF50;
-}
-.button1:hover {
-    background-color: #4CAF50;
-    color: white;
-}
-.input
-{
-	border:2px solid #a1a1a1;
-	padding:10px 40px; 
-	background:#dddddd;
-	width:300px;
-	border-radius:25px;
-}
-body
-{
-	background-color:#349484;
-}
-</style>
-</style>
