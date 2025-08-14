@@ -3,220 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>往事随风的青春博客 | 记录Code每一刻</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <title>MC生存服务器</title>
     <style>
         :root {
-            --primary-pink: #ff85a2;
-            --secondary-blue: #87ceeb;
-            --accent-green: #a8e6cf;
+            --primary-color: #00c6a7;
+            --secondary-color: #1e4d92;
+            --accent-color: #00ffd5;
+            --bg-color: #f0f8ff;
+            --card-bg: #ffffff;
+            --text-color: #333333;
         }
-
-        #particles-js {
-            position: fixed;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 198, 167, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(30, 77, 146, 0.1) 0%, transparent 20%);
+            overflow-x: hidden;
+        }
+        
+        header {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            z-index: -1;
-        }
-
-        .blog-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
             position: relative;
-            cursor: pointer;
         }
-
-        .blog-card a {
-            display: block;
+        
+        .title-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 3rem;
+            background-color: var(--primary-color);
+            margin-left: 5px;
+            animation: blink 0.8s infinite;
+            position: absolute;
+            right: -15px;
+            bottom: 5px;
+            opacity: 0;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            display: flex;
+            flex-wrap: nowrap; /* 改为不换行 */
+            justify-content: center;
+            gap: 1.5rem; /* 缩小间距 */
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            overflow-x: auto; /* 添加水平滚动以防内容过多 */
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            width: 250px;
+            min-width: 250px; /* 确保卡片不会缩小 */
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0; /* 防止卡片被压缩 */
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card:hover .icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px rgba(0, 198, 167, 0.5));
+        }
+        
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        .card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+        }
+        
+        footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        .particles {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10;
+            z-index: -1;
+            overflow: hidden;
         }
-
-        .blog-card-content {
-            position: relative;
-            z-index: 20;
-            pointer-events: none;
+        
+        .particle {
+            position: absolute;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.3;
         }
-
-        .blog-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 20px rgba(255, 133, 162, 0.2);
+        
+        @media (max-width: 1100px) {
+            .container {
+                flex-wrap: wrap; /* 小屏幕时换行 */
+                justify-content: center;
+            }
+            
+            .card {
+                width: calc(50% - 1rem); /* 两列布局 */
+                min-width: auto;
+            }
         }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 4px; }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .container {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 1rem;
+            }
+            
+            .card {
+                width: 280px;
+                min-width: 280px;
+                padding: 1.5rem;
+            }
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(20px, 20px) rotate(180deg);
+            }
+            100% {
+                transform: translate(-20px, -20px) rotate(360deg);
+            }
+        }
     </style>
 </head>
-<body class="font-sans">
-    <!-- 粒子背景 -->
-    <div id="particles-js"></div>
-
-    <!-- 导航栏 -->
-    <nav class="bg-white/95 backdrop-blur-lg fixed w-full top-0 z-50 shadow-sm">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="text-xl font-bold text-gray-900">
-                    <a href="/">往事随风</a>
-                </div>
-                <div class="space-x-4">
-                    <a href="#about" class="text-gray-600 hover:text-primary-pink transition-colors">关于我</a>
-                    <a href="#articles" class="text-gray-600 hover:text-primary-pink transition-colors">文章</a>
-                    <a href="#contact" class="text-gray-600 hover:text-primary-pink transition-colors">联系</a>
-                </div>
-            </div>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <header>
+        <div class="title-container">
+            <h1 id="title"></h1>
+            <span class="cursor" id="cursor"></span>
         </div>
-    </nav>
-
-    <!-- 头部简介 -->
-    <header class="min-h-screen flex items-center pt-16">
-        <div class="container mx-auto px-4 text-center">
-            <div data-aos="fade-up" data-aos-delay="200">
-                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-                    这里是往事随风的<br>「Code」
-                </h1>
-                <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
-                    记录Code的妙想 | 分享学习成长的小确幸 | 收藏每一个闪闪发光的日常
-                </p>
-                <div class="flex justify-center space-x-4 mb-12">
-                    <a href="#articles" class="bg-primary-pink text-white px-6 py-2 rounded-lg hover:bg-pink-500 transition-colors">
-                        查看最新文章
-                    </a>
-                    <a href="#about" class="border border-primary-pink text-primary-pink px-6 py-2 rounded-lg hover:bg-pink-50 transition-colors">
-                        了解更多
-                    </a>
-                </div>
-                <img src="https://picsum.photos/800/400?random=1" alt="博客封面" 
-                     class="rounded-2xl shadow-lg mx-auto w-full md:w-4/5">
-            </div>
-        </div>
+        <p class="subtitle">一个充满创意与冒险的方块世界</p>
     </header>
-
-    <!-- 文章列表 -->
-    <section id="articles" class="py-16">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center" data-aos="fade-up">
-                最近更新
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 文章卡片1 -->
-                <div class="blog-card bg-white rounded-2xl p-6" data-aos="fade-up" data-aos-delay="100">
-                    <a href="article.html?id=1"></a>
-                    <div class="blog-card-content">
-                        <div class="h-40 rounded-lg overflow-hidden mb-4">
-                            <img src="https://picsum.photos/400/300?random=2" 
-                                 alt="文章图" 
-                                 class="w-full h-full object-cover transition-transform hover:scale-105">
-                        </div>
-                        <h3 class="font-semibold text-xl mb-2">暂未更新</h3>
-                        <p class="text-gray-600 text-sm mb-4">暂未更新</p>
-                        <div class="flex justify-between items-center text-sm text-gray-500">
-                            <span>2025-05-08</span>
-                            <span><i class="fas fa-comment-dots"></i> 23</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 文章卡片2 -->
-                <div class="blog-card bg-white rounded-2xl p-6" data-aos="fade-up" data-aos-delay="200">
-                    <a href="py.html?id=2"></a>
-                    <div class="blog-card-content">
-                        <div class="h-40 rounded-lg overflow-hidden mb-4">
-                            <img src="https://picsum.photos/400/300?random=3" 
-                                 alt="文章图" 
-                                 class="w-full h-full object-cover transition-transform hover:scale-105">
-                        </div>
-                        <h3 class="font-semibold text-xl mb-2">Python递归函数</h3>
-                        <p class="text-gray-600 text-sm mb-4">有关python</p>
-                        <div class="flex justify-between items-center text-sm text-gray-500">
-                            <span>2025-05-06</span>
-                            <span><i class="fas fa-comment-dots"></i> 18</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 文章卡片3 -->
-                <div class="blog-card bg-white rounded-2xl p-6" data-aos="fade-up" data-aos-delay="300">
-                    <a href="article.html?id=3"></a>
-                    <div class="blog-card-content">
-                        <div class="h-40 rounded-lg overflow-hidden mb-4">
-                            <img src="https://picsum.photos/400/300?random=4" 
-                                 alt="文章图" 
-                                 class="w-full h-full object-cover transition-transform hover:scale-105">
-                        </div>
-                        <h3 class="font-semibold text-xl mb-2">暂未更新</h3>
-                        <p class="text-gray-600 text-sm mb-4">暂未更新</p>
-                        <div class="flex justify-between items-center text-sm text-gray-500">
-                            <span>2025-05-03</span>
-                            <span><i class="fas fa-comment-dots"></i> 31</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    
+    <div class="container" id="container">
+        <div class="card">
+            <div class="icon">👑</div>
+            <h2>管理权限申请</h2>
+            <p>申请成为服务器管理员，协助维护服务器秩序与建设</p>
+            <a href="https://www.wjx.cn/vm/eFK1w4t.aspx#" class="btn" target="_blank">立即申请</a>
         </div>
-    </section>
-
-    <!-- 页脚 -->
-    <footer class="bg-white/95 backdrop-blur-lg py-8">
-        <div class="container mx-auto px-4 text-center">
-            <div class="mb-4">
-                <a href="https://weibo.com" class="text-gray-600 hover:text-primary-pink mx-2">
-                    <i class="fab fa-weibo fa-2x"></i>
-                </a>
-                <a href="https://zhihu.com" class="text-gray-600 hover:text-primary-pink mx-2">
-                    <i class="fab fa-zhihu fa-2x"></i>
-                </a>
-                <a href="https://github.com" class="text-gray-600 hover:text-primary-pink mx-2">
-                    <i class="fab fa-github fa-2x"></i>
-                </a>
-            </div>
-            <p class="text-sm text-gray-500">© 2025 往事随风的青春博客</p>
+        
+        <div class="card">
+            <div class="icon">🚨</div>
+            <h2>玩家违规举报</h2>
+            <p>举报破坏游戏环境的行为，维护公平游戏体验</p>
+            <a href="https://www.wjx.cn/vm/OPqwSif.aspx# " class="btn" target="_blank">提交举报</a>
         </div>
+        
+        <div class="card">
+            <div class="icon">📝</div>
+            <h2>违规申诉处理</h2>
+            <p>对处罚有异议？您可以在此提交申诉请求</p>
+            <a href="https://www.wjx.cn/vm/tU4a84X.aspx# " class="btn" target="_blank">提交申诉</a>
+        </div>
+        
+        <div class="card">
+            <div class="icon">🗺️</div>
+            <h2>地图建设建议</h2>
+            <p>为服务器地图建设提供您的创意与建议</p>
+            <a href="https://www.wjx.cn/vm/YOLOMHp.aspx# " class="btn" target="_blank">提交建议</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 MC生存服务器 版权所有 | 由热爱Minecraft的团队运营</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // 初始化粒子效果
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 80 },
-                color: { value: ["#ff85a2", "#87ceeb", "#a8e6cf"] },
-                shape: { type: "circle" },
-                opacity: { value: 0.5 },
-                size: { value: 3 },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: "#ddd",
-                    opacity: 0.4,
-                    width: 1
-                },
-                move: { enable: true, speed: 2 }
+        // 打字机效果
+        const title = "MC生存服务器";
+        let i = 0;
+        const titleElement = document.getElementById('title');
+        const cursor = document.getElementById('cursor');
+        
+        // 初始时清空标题内容
+        titleElement.innerHTML = '';
+        
+        function typeWriter() {
+            if (i < title.length) {
+                titleElement.innerHTML += title.charAt(i);
+                i++;
+                setTimeout(typeWriter, 150);
+            } else {
+                cursor.style.opacity = '0';
+                document.querySelector('.subtitle').style.opacity = '1';
+                document.querySelector('.subtitle').style.transform = 'translateY(0)';
+                document.getElementById('container').style.opacity = '1';
+                document.getElementById('container').style.transform = 'translateY(0)';
             }
-        });
-
-        // 初始化滚动动画
-        AOS.init({
-            duration: 800,
-            offset: 100,
-            once: true
-        });
-
-        // 卡片点击效果
-        document.querySelectorAll('.blog-card').forEach(card => {
-            card.addEventListener('click', function(e) {
-                const link = this.querySelector('a');
-                if (link) {
-                    window.location.href = link.href;
-                }
-            });
-        });
+        }
+        
+        // 延迟显示光标
+        setTimeout(() => {
+            cursor.style.opacity = '1';
+            setTimeout(typeWriter, 500);
+        }, 500);
+        
+        // 创建粒子效果
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 10 + 5;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 10 + 10;
+                const color = Math.random() > 0.5 ? 'var(--primary-color)' : 'var(--secondary-color)';
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.backgroundColor = color;
+                particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite alternate`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 初始化
+        window.onload = function() {
+            createParticles();
+        };
     </script>
 </body>
 </html>
