@@ -2,127 +2,157 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>班级元宇宙中枢</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>班级态势感知系统</title>
+    
+    <!-- 引入用于图标的 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        /* === CSS 样式部分 === */
-        :root {
-            --primary: #667eea;
-            --primary-dark: #5a67d8;
-            --dark-bg: #1a1e26;
-            --dark-card: #23272f;
-            --light-text: #e0e0e0;
-            --border-radius: 12px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* === 全局重置与背景 === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, var(--primary), #764ba2);
-            color: #333;
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: var(--transition);
+            font-family: 'Arial', sans-serif; 
+            background: #000;
+            color: #0F0;
+            overflow: hidden; /* 禁止滚动条，保持全屏 */
+            cursor: default;
+        }
+        /* 模拟扫描线效果，增加复古科技感 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10000;
+            animation: scan 10s linear infinite;
         }
 
-        /* 暗黑模式 */
-        body.dark-mode { 
-            background: #121212;
-            color: var(--light-text);
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
         }
 
-        /* 导航栏 */
+        /* === 粒子背景容器 === */
+        #particles-js {
+            position: absolute; width: 100%; height: 100%; z-index: -1;
+            background-color: #000;
+        }
+
+        /* === 导航栏 === */
         .navbar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 20, 0, 0.8);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 100;
+            border-bottom: 1px solid #0F0;
+            box-shadow: 0 0 10px #0F0;
+            backdrop-filter: blur(5px);
+        }
+        .nav-logo { color: #0F0; font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 5px #0F0; }
+        .nav-links button { 
+            background: #030; border: 1px solid #0F0; color: #0F0; 
+            margin-left: 10px; padding: 5px 10px; cursor: pointer; 
+            transition: 0.3s; font-size: 0.9rem;
+        }
+        .nav-links button:hover { background: #0F0; color: #000; box-shadow: 0 0 5px #0F0; }
+
+        /* === 仪表盘网格布局 === */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-top: 20px;
         }
 
-        .nav-logo { color: white; font-size: 1.3rem; font-weight: bold; text-decoration: none; }
-        .nav-links a { color: white; margin-left: 1.5rem; text-decoration: none; font-weight: 500; transition: var(--transition); }
-        .nav-links a:hover { color: #ffd166; }
-
-        /* 容器 */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
-        /* 卡片 */
+        /* === 卡片样式 === */
         .card {
-            background: #f8f9fa;
-            border-left: 4px solid var(--primary);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            transform-style: preserve-3d;
+            background: rgba(0, 20, 0, 0.5);
+            border: 1px solid #0F0;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
             overflow: hidden;
         }
-
-        /* 丝滑的 3D 翻转效果 */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+        }
         .card::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, transparent 70%);
             transform: translateX(-150%) translateY(-150%) rotate(45deg);
             opacity: 0;
-            transition: var(--transition);
+            transition: opacity 0.5s;
         }
-
-        .card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            z-index: 1;
-        }
-
         .card:hover::before {
             opacity: 1;
             transform: translateX(150%) translateY(150%) rotate(45deg);
         }
 
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            margin: 0.5rem;
-            border: none;
-            outline: none;
+        .card h3 {
+            color: #0F0;
+            text-shadow: 0 0 2px #0F0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .card h3 i { margin-right: 10px; }
+
+        /* === 跑马灯 (市场行情) === */
+        .ticker {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #0F0;
+            margin: 20px;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 0 5px #0F0 inset;
+        }
+        .ticker-item {
+            display: inline-block;
+            padding: 0 20px;
+            font-family: 'Courier New', monospace;
+        }
+        .positive { color: #0F0; }
+        .negative { color: #F00; }
+
+        /* === 黑洞点名全屏覆盖层 === */
+        #blackholeOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.9) 0%, #000 70%);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #0F0;
+            text-align: center;
+        }
+        #blackholeOverlay h1 {
+            font-size: 5rem;
+            text-shadow: 0 0 20px #0F0;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { text-shadow: 0 0 20px #0F0; }
+            50% { text-shadow: 0 0 30px #0F0, 0 0 40px #0F0; }
+            100% { text-shadow: 0 0 20px #0F0; }
         }
 
-        .btn:hover { background: var(--primary-dark); transform: scale(1.05); }
-        .btn.dark { background: #555; }
-        .btn.dark:hover { background: #666; }
-
-        /* Toast 通知 */
-        .toast-container {
+        /* === Toast 通知 (右上角) === */
+        #toastContainer {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -132,164 +162,281 @@
             gap: 10px;
             max-width: 300px;
         }
-
         .toast {
-            background: #333;
-            color: white;
+            background: rgba(0, 0, 0, 0.9);
+            color: #0F0;
             padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid #0F0;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #0F0;
             opacity: 0;
             transform: translateX(100%);
             animation: slideInToast 0.4s ease forwards, fadeOutToast 0.4s ease 2.6s forwards;
         }
-
         @keyframes slideInToast { to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeOutToast { to { opacity: 0; transform: translateX(100%); } }
 
-        /* 暗黑模式下的卡片 */
-        body.dark-mode .container,
-        body.dark-mode .card {
-            background: var(--dark-card);
-            color: var(--light-text);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        /* === 加载动画 === */
+        .loading {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #0F0;
+            border-radius: 50%;
+            margin-left: 10px;
+            animation: blink 1.4s infinite both;
         }
-
-        /* 响应式布局 */
-        @media (max-width: 768px) {
-            .container { margin: 1rem; padding: 1rem; }
-            .navbar { flex-direction: column; padding: 1rem; gap: 10px; }
-            .nav-links a { margin: 0 10px; }
+        .loading:nth-child(2) { animation-delay: 0.2s; }
+        .loading:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
         }
     </style>
 </head>
 <body>
 
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+
+    <!-- 语音助手提示 -->
+    <div id="voiceHint" style="position: fixed; bottom: 20px; right: 20px; color: #0F0; font-size: 0.8rem; background: rgba(0,0,0,0.5); padding: 5px 10px; border: 1px solid #0F0; border-radius: 5px;">
+        语音状态: <span id="voiceStatus">离线</span>
+    </div>
+
     <!-- 导航栏 -->
     <nav class="navbar">
-        <a href="#" class="nav-logo">🌌 班级元宇宙中枢</a>
+        <div class="nav-logo"><i class="fas fa-terminal"></i> 班级态势感知系统 v2.0</div>
         <div class="nav-links">
-            <a href="#" onclick="switchTab('home')">首页</a>
-            <a href="#" onclick="switchTab('vault')">数据宝库</a>
-            <a href="#" onclick="switchTab('blackhole')">黑洞点名</a>
-            <button class="btn dark" onclick="toggleDarkMode()">切换暗黑</button>
+            <button onclick="showToast('系统自检中...')"><i class="fas fa-sync"></i> 刷新</button>
+            <button onclick="startRollCall()"><i class="fas fa-user-secret"></i> 量子点名</button>
+            <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> 暗黑模式</button>
         </div>
     </nav>
 
-    <!-- Toast 容器 -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- 首页内容 -->
-    <div id="home" class="container page">
-        <h1 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">欢迎登上班级飞船</h1>
-        
-        <div class="card" onclick="showToast('正在加载生物特征...')">
-            <h3>🚀 系统状态</h3>
-            <p>当前连接人数：45/50 (稳定)</p>
-        </div>
-
-        <div class="card" onclick="switchTab('vault')">
-            <h3>💎 班级资产</h3>
-            <p>查看班级币排行与荣誉榜单</p>
-        </div>
-
-        <div style="text-align: center; margin-top: 3rem;">
-            <button class="btn" onclick="showToast('校准完成！')">执行系统校准</button>
-        </div>
+    <!-- 市场行情跑马灯 -->
+    <div class="ticker" id="marketTicker">
+        <span class="ticker-item positive">张三 因作业全对 +50点声望</span>
+        <span class="ticker-item negative">李四 因迟到 -20点声望</span>
+        <span class="ticker-item positive">王五 解出难题 声望暴涨</span>
     </div>
 
-    <!-- 数据宝库内容 (隐藏) -->
-    <div id="vault" class="container page" style="display: none;">
-        <h2>📊 数据宝库</h2>
-        <div class="card" onclick="showToast('已复制数据')">
-            <h3>🧬 学生基因图谱 (模拟)</h3>
-            <p>张三: 专注力MAX | 李四: 幽默感满点</p>
-        </div>
+    <!-- 仪表盘主体 -->
+    <div class="dashboard">
+        <!-- 卡片 1: 概览 -->
         <div class="card">
-            <h3>📈 历史成绩曲线</h3>
-            <p>点击下载学期分析报告</p>
+            <h3><i class="fas fa-chalkboard-teacher"></i> 班级概况</h3>
+            <p>总人数: <strong id="totalStudents">45</strong></p>
+            <p>今日出勤: <strong id="attendance">44/45</strong> (97.8%)</p>
+            <p>平均分: <strong id="avgScore">85.5</strong></p>
+        </div>
+
+        <!-- 卡片 2: 量子点名历史 -->
+        <div class="card">
+            <h3><i class="fas fa-history"></i> 最近点名记录</h3>
+            <ul id="rollCallLog" style="margin-top: 10px; color: #0F0;">
+                <li>上次点名: 张三 (08:00:02)</li>
+                <li>上上次: 李四 (07:55:43)</li>
+            </ul>
+        </div>
+
+        <!-- 卡片 3: AI 分析 -->
+        <div class="card">
+            <h3><i class="fas fa-robot"></i> AI 学情分析</h3>
+            <p id="aiReport">正在分析数据<span class="loading"></span></p>
+        </div>
+
+        <!-- 卡片 4: 声望排行榜 -->
+        <div class="card">
+            <h3><i class="fas fa-award"></i> 声望排行榜</h3>
+            <ol id="rankList" style="margin-top: 10px; color: #0F0;">
+                <li>张三: 980分 (学霸)</li>
+                <li>王五: 950分 (智多星)</li>
+                <li>赵六: 920分 (守纪模范)</li>
+            </ol>
         </div>
     </div>
 
-    <!-- 黑洞点名内容 (隐藏) -->
-    <div id="blackhole" class="container page" style="display: none;">
-        <h2>🌀 黑洞点名器</h2>
-        <div style="text-align: center; padding: 40px; background: #000; border-radius: var(--border-radius); margin: 20px 0;">
-            <div id="nameDisplay" style="font-size: 3rem; color: #0ff; height: 80px; text-shadow: 0 0 10px #0ff;">准备就绪</div>
-            <button class="btn" style="margin-top: 20px; background: #f39c12;" onclick="startBlackhole()">启动引擎</button>
-        </div>
+    <!-- 全屏黑洞点名覆盖层 -->
+    <div id="blackholeOverlay">
+        <h1>正在锁定目标...</h1>
+        <p id="selectedName" style="font-size: 2rem; margin-top: 20px; color: #0ff;"></p>
     </div>
 
+    <!-- Toast 容器 -->
+    <div id="toastContainer"></div>
+
+    <!-- 引入 Particles.js 库 (用于背景粒子) -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // === JavaScript 逻辑部分 ===
-        
-        // 1. Toast 通知系统 (核心反馈)
+        // === 全局配置 ===
+        const students = ["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十", "刘一", "陈二"];
+        let isDarkMode = false;
+
+        // === 1. 初始化粒子背景 ===
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: '#0F0' },
+                    shape: { type: 'circle', stroke: { width: 0, color: '#000' }, polygon: { nb_sides: 5 } },
+                    opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+                    size: { value: 3, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
+                    line_linked: { enable: true, distance: 150, color: '#0F0', opacity: 0.2, width: 1 },
+                    move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                },
+                interactivity: { detect_on: 'canvas', events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true } },
+                retina_detect: true
+            });
+            // 初始化完成提示
+            setTimeout(() => showToast("系统初始化完成，欢迎接入"), 1000);
+            // 开始模拟数据更新
+            startSimulation();
+        });
+
+        // === 2. Toast 通知系统 ===
         function showToast(message) {
             const container = document.getElementById('toastContainer');
-            
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.textContent = message;
-            
+            toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
             container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
 
-            // 3秒后自动移除
+        // === 3. 量子点名系统 (全屏动画) ===
+        function startRollCall() {
+            const overlay = document.getElementById('blackholeOverlay');
+            const nameDisplay = document.getElementById('selectedName');
+            
+            overlay.style.display = 'flex';
+            nameDisplay.textContent = '寻找目标中';
+            
+            let count = 0;
+            const interval = setInterval(() => {
+                nameDisplay.textContent = students[Math.floor(Math.random() * students.length)];
+            }, 100);
+
+            // 3秒后停止
             setTimeout(() => {
-                toast.remove();
+                clearInterval(interval);
+                const finalIndex = Math.floor(Math.random() * students.length);
+                const finalName = students[finalIndex];
+                nameDisplay.innerHTML = `锁定目标: <strong style="color: #ff6600; text-shadow: 0 0 10px #ff6600;">${finalName}</strong>`;
+                
+                // 添加到日志
+                const log = document.getElementById('rollCallLog');
+                const li = document.createElement('li');
+                li.textContent = `本次点名: ${finalName} (${new Date().toLocaleTimeString()})`;
+                log.prepend(li); // 插入到最前面
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    showToast(`目标 ${finalName} 已锁定`);
+                }, 2000);
             }, 3000);
         }
 
-        // 2. 页面切换 (模拟多页面)
-        function switchTab(tabId) {
-            // 隐藏所有页面
-            document.querySelectorAll('.page').forEach(page => {
-                page.style.display = 'none';
-            });
-            // 显示目标页面
-            document.getElementById(tabId).style.display = 'block';
-            
-            // 给用户反馈
-            showToast(`切换到 ${tabId === 'home' ? '首页' : tabId === 'vault' ? '数据宝库' : '黑洞点名'}`);
-        }
-
-        // 3. 暗黑模式切换
+        // === 4. 暗黑模式切换 ===
         function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                showToast('暗黑模式已激活 🌙');
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.body.style.setProperty('color', '#000');
+                document.body.style.setProperty('background', '#000');
+                document.querySelectorAll('.card, .navbar').forEach(el => {
+                    el.style.background = 'rgba(0, 0, 0, 0.8)';
+                    el.style.border = '1px solid #666';
+                    el.style.color = '#000';
+                });
+                showToast("暗黑模式已激活");
             } else {
-                showToast('恢复明亮模式 ☀️');
+                // 恢复默认
+                document.body.removeAttribute('style');
+                document.querySelectorAll('.card, .navbar').forEach(el => {
+                    el.removeAttribute('style');
+                });
+                showToast("恢复经典模式");
             }
         }
 
-        // 4. 黑洞点名器逻辑
-        const students = ["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十"];
-        let interval;
-        
-        function startBlackhole() {
-            const display = document.getElementById('nameDisplay');
-          clearInterval(interval); // 防止重复点击冲突
+        // === 5. 模拟数据更新 (跑马灯、AI报告) ===
+        function startSimulation() {
+            // 模拟跑马灯更新
+            setInterval(() => {
+                const ticker = document.getElementById('marketTicker');
+                const change = (Math.random() * 20 - 10).toFixed(1);
+                const student = students[Math.floor(Math.random() * students.length)];
+                const action = Math.random() > 0.5 ? '因表现优异' : '因违纪';
+                const sign = parseFloat(change) >= 0 ? '+' : '';
+                
+                const span = document.createElement('span');
+                span.className = parseFloat(change) > 0 ? 'ticker-item positive' : 'ticker-item negative';
+                span.textContent = `${student} ${action} ${sign}${change}分`;
+                
+                ticker.appendChild(span);
+                
+                // 动画结束后移除
+                setTimeout(() => span.remove(), 5000);
+            }, 3000);
 
-            // 快速随机切换名字 (0.1秒一次)
-            interval = setInterval(() => {
-                const randomName = students[Math.floor(Math.random() * students.length)];
-                display.textContent = randomName;
-            }, 100);
-
-            // 2秒后停止
-            setTimeout(() => {
-                clearInterval(interval);
-                const finalName = students[Math.floor(Math.random() * students.length)];
-                display.innerHTML = `命运选择了： <strong style="color: #e74c3c;">${finalName}</strong>`;
-                showToast(`幸运儿是：${finalName}`);
-            }, 2000);
+            // 模拟 AI 报告生成
+            setInterval(() => {
+                const reports = [
+                    "检测到张三同学近期专注力提升明显",
+                    "预警：李四同学作业提交时间不稳定",
+                    "分析完成：本周数学平均分预计上涨",
+                    "系统优化：建议调整后排座位布局"
+                ];
+                document.getElementById('aiReport').textContent = reports[Math.floor(Math.random() * reports.length)];
+            }, 5000);
         }
 
-        // 5. 页面加载完成初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 可以在这里添加启动动画
-            console.log("班级系统已启动，版本 1.0");
-        });
+        // === 6. 语音识别系统 (大胆的功能) ===
+        function initVoice() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                document.getElementById('voiceStatus').textContent = '浏览器不支持 (需Chrome)';
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'zh-CN';
+            recognition.continuous = true; // 连续监听
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                document.getElementById('voiceStatus').textContent = '在线 (说出指令)';
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
+                console.log("语音指令:", transcript);
+
+                if (transcript.includes('点名')) {
+                    startRollCall();
+                } else if (transcript.includes('刷新') || transcript.includes('自检')) {
+                    showToast('正在执行系统自检...');
+                } else if (transcript.includes('暗黑')) {
+                    toggleDarkMode();
+                } else if (transcript.includes('你好')) {
+                    showToast('已唤醒，请下指令');
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error("语音错误:", event.error);
+            };
+
+            // 启动语音识别
+            recognition.start();
+        }
+
+        // 页面加载完成后启动语音 (注意：部分浏览器需要用户手势才能启动麦克风)
+        // 这里为了演示，放在一个简单的点击后触发，或者直接尝试启动（可能会被拦截）
+        // 实际使用中，建议加一个“开启语音”按钮
+        // initVoice(); 
     </script>
+
 </body>
 </html>
