@@ -1,349 +1,295 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC生存服务器</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>班级元宇宙中枢</title>
     <style>
+        /* === CSS 样式部分 === */
         :root {
-            --primary-color: #00c6a7;
-            --secondary-color: #1e4d92;
-            --accent-color: #00ffd5;
-            --bg-color: #f0f8ff;
-            --card-bg: #ffffff;
-            --text-color: #333333;
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --dark-bg: #1a1e26;
+            --dark-card: #23272f;
+            --light-text: #e0e0e0;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary), #764ba2);
+            color: #333;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 198, 167, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(30, 77, 146, 0.1) 0%, transparent 20%);
             overflow-x: hidden;
+            transition: var(--transition);
         }
-        
-        header {
-            width: 100%;
-            padding: 2rem 0;
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
+
+        /* 暗黑模式 */
+        body.dark-mode { 
+            background: #121212;
+            color: var(--light-text);
         }
-        
-        .title-container {
-            position: relative;
-            display: inline-block;
-        }
-        
-        h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 0.5rem;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 3rem;
-            background-color: var(--primary-color);
-            margin-left: 5px;
-            animation: blink 0.8s infinite;
-            position: absolute;
-            right: -15px;
-            bottom: 5px;
-            opacity: 0;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 1200px;
+
+        /* 导航栏 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
             display: flex;
-            flex-wrap: nowrap; /* 改为不换行 */
-            justify-content: center;
-            gap: 1.5rem; /* 缩小间距 */
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+
+        .nav-logo { color: white; font-size: 1.3rem; font-weight: bold; text-decoration: none; }
+        .nav-links a { color: white; margin-left: 1.5rem; text-decoration: none; font-weight: 500; transition: var(--transition); }
+        .nav-links a:hover { color: #ffd166; }
+
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
             padding: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             opacity: 0;
             transform: translateY(20px);
-            overflow-x: auto; /* 添加水平滚动以防内容过多 */
+            animation: fadeInUp 0.6s ease forwards;
         }
-        
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* 卡片 */
         .card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            width: 250px;
-            min-width: 250px; /* 确保卡片不会缩小 */
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius);
             cursor: pointer;
+            transition: var(--transition);
+            transform-style: preserve-3d;
             position: relative;
             overflow: hidden;
-            flex-shrink: 0; /* 防止卡片被压缩 */
         }
-        
+
+        /* 丝滑的 3D 翻转效果 */
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            transform: translateX(-150%) translateY(-150%) rotate(45deg);
+            opacity: 0;
+            transition: var(--transition);
         }
-        
+
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1;
         }
-        
-        .card:hover .icon {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 10px rgba(0, 198, 167, 0.5));
+
+        .card:hover::before {
+            opacity: 1;
+            transform: translateX(150%) translateY(150%) rotate(45deg);
         }
-        
-        .icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            transition: all 0.3s ease;
-        }
-        
-        .card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--secondary-color);
-        }
-        
-        .card p {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-        }
-        
+
         .btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            margin: 0.5rem;
+            border: none;
+            outline: none;
         }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+
+        .btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+        .btn.dark { background: #555; }
+        .btn.dark:hover { background: #666; }
+
+        /* Toast 通知 */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
         }
-        
-        footer {
-            margin-top: auto;
-            padding: 2rem;
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            width: 100%;
+
+        .toast {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateX(100%);
+            animation: slideInToast 0.4s ease forwards, fadeOutToast 0.4s ease 2.6s forwards;
         }
-        
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
+
+        @keyframes slideInToast { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeOutToast { to { opacity: 0; transform: translateX(100%); } }
+
+        /* 暗黑模式下的卡片 */
+        body.dark-mode .container,
+        body.dark-mode .card {
+            background: var(--dark-card);
+            color: var(--light-text);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-        
-        .particle {
-            position: absolute;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            opacity: 0.3;
-        }
-        
-        @media (max-width: 1100px) {
-            .container {
-                flex-wrap: wrap; /* 小屏幕时换行 */
-                justify-content: center;
-            }
-            
-            .card {
-                width: calc(50% - 1rem); /* 两列布局 */
-                min-width: auto;
-            }
-        }
-        
+
+        /* 响应式布局 */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .container {
-                flex-direction: row;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                justify-content: flex-start;
-                padding: 1rem;
-            }
-            
-            .card {
-                width: 280px;
-                min-width: 280px;
-                padding: 1.5rem;
-            }
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            50% {
-                transform: translate(20px, 20px) rotate(180deg);
-            }
-            100% {
-                transform: translate(-20px, -20px) rotate(360deg);
-            }
+            .container { margin: 1rem; padding: 1rem; }
+            .navbar { flex-direction: column; padding: 1rem; gap: 10px; }
+            .nav-links a { margin: 0 10px; }
         }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    
-    <header>
-        <div class="title-container">
-            <h1 id="title"></h1>
-            <span class="cursor" id="cursor"></span>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="#" class="nav-logo">🌌 班级元宇宙中枢</a>
+        <div class="nav-links">
+            <a href="#" onclick="switchTab('home')">首页</a>
+            <a href="#" onclick="switchTab('vault')">数据宝库</a>
+            <a href="#" onclick="switchTab('blackhole')">黑洞点名</a>
+            <button class="btn dark" onclick="toggleDarkMode()">切换暗黑</button>
         </div>
-        <p class="subtitle">一个充满创意与冒险的方块世界</p>
-    </header>
-    
-    <div class="container" id="container">
-        <div class="card">
-            <div class="icon">👑</div>
-            <h2>管理权限申请</h2>
-            <p>申请成为服务器管理员，协助维护服务器秩序与建设</p>
-            <a href="https://www.wjx.cn/vm/eFK1w4t.aspx#" class="btn" target="_blank">立即申请</a>
-        </div>
+    </nav>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 首页内容 -->
+    <div id="home" class="container page">
+        <h1 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">欢迎登上班级飞船</h1>
         
-        <div class="card">
-            <div class="icon">🚨</div>
-            <h2>玩家违规举报</h2>
-            <p>举报破坏游戏环境的行为，维护公平游戏体验</p>
-            <a href="https://www.wjx.cn/vm/OPqwSif.aspx# " class="btn" target="_blank">提交举报</a>
+        <div class="card" onclick="showToast('正在加载生物特征...')">
+            <h3>🚀 系统状态</h3>
+            <p>当前连接人数：45/50 (稳定)</p>
         </div>
-        
-        <div class="card">
-            <div class="icon">📝</div>
-            <h2>违规申诉处理</h2>
-            <p>对处罚有异议？您可以在此提交申诉请求</p>
-            <a href="https://www.wjx.cn/vm/tU4a84X.aspx# " class="btn" target="_blank">提交申诉</a>
+
+        <div class="card" onclick="switchTab('vault')">
+            <h3>💎 班级资产</h3>
+            <p>查看班级币排行与荣誉榜单</p>
         </div>
-        
-        <div class="card">
-            <div class="icon">🗺️</div>
-            <h2>地图建设建议</h2>
-            <p>为服务器地图建设提供您的创意与建议</p>
-            <a href="https://www.wjx.cn/vm/YOLOMHp.aspx# " class="btn" target="_blank">提交建议</a>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <button class="btn" onclick="showToast('校准完成！')">执行系统校准</button>
         </div>
     </div>
-    
-    <footer>
-        <p>© 2025 MC生存服务器 版权所有 | 由热爱Minecraft的团队运营</p>
-    </footer>
+
+    <!-- 数据宝库内容 (隐藏) -->
+    <div id="vault" class="container page" style="display: none;">
+        <h2>📊 数据宝库</h2>
+        <div class="card" onclick="showToast('已复制数据')">
+            <h3>🧬 学生基因图谱 (模拟)</h3>
+            <p>张三: 专注力MAX | 李四: 幽默感满点</p>
+        </div>
+        <div class="card">
+            <h3>📈 历史成绩曲线</h3>
+            <p>点击下载学期分析报告</p>
+        </div>
+    </div>
+
+    <!-- 黑洞点名内容 (隐藏) -->
+    <div id="blackhole" class="container page" style="display: none;">
+        <h2>🌀 黑洞点名器</h2>
+        <div style="text-align: center; padding: 40px; background: #000; border-radius: var(--border-radius); margin: 20px 0;">
+            <div id="nameDisplay" style="font-size: 3rem; color: #0ff; height: 80px; text-shadow: 0 0 10px #0ff;">准备就绪</div>
+            <button class="btn" style="margin-top: 20px; background: #f39c12;" onclick="startBlackhole()">启动引擎</button>
+        </div>
+    </div>
 
     <script>
-        // 打字机效果
-        const title = "MC生存服务器";
-        let i = 0;
-        const titleElement = document.getElementById('title');
-        const cursor = document.getElementById('cursor');
+        // === JavaScript 逻辑部分 ===
         
-        // 初始时清空标题内容
-        titleElement.innerHTML = '';
-        
-        function typeWriter() {
-            if (i < title.length) {
-                titleElement.innerHTML += title.charAt(i);
-                i++;
-                setTimeout(typeWriter, 150);
-            } else {
-                cursor.style.opacity = '0';
-                document.querySelector('.subtitle').style.opacity = '1';
-                document.querySelector('.subtitle').style.transform = 'translateY(0)';
-                document.getElementById('container').style.opacity = '1';
-                document.getElementById('container').style.transform = 'translateY(0)';
-            }
-        }
-        
-        // 延迟显示光标
-        setTimeout(() => {
-            cursor.style.opacity = '1';
-            setTimeout(typeWriter, 500);
-        }, 500);
-        
-        // 创建粒子效果
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 20;
+        // 1. Toast 通知系统 (核心反馈)
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
             
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                const size = Math.random() * 10 + 5;
-                const posX = Math.random() * 100;
-                const posY = Math.random() * 100;
-                const delay = Math.random() * 5;
-                const duration = Math.random() * 10 + 10;
-                const color = Math.random() > 0.5 ? 'var(--primary-color)' : 'var(--secondary-color)';
-                
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${posX}%`;
-                particle.style.top = `${posY}%`;
-                particle.style.backgroundColor = color;
-                particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite alternate`;
-                
-                particlesContainer.appendChild(particle);
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            container.appendChild(toast);
+
+            // 3秒后自动移除
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // 2. 页面切换 (模拟多页面)
+        function switchTab(tabId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            // 显示目标页面
+            document.getElementById(tabId).style.display = 'block';
+            
+            // 给用户反馈
+            showToast(`切换到 ${tabId === 'home' ? '首页' : tabId === 'vault' ? '数据宝库' : '黑洞点名'}`);
+        }
+
+        // 3. 暗黑模式切换
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                showToast('暗黑模式已激活 🌙');
+            } else {
+                showToast('恢复明亮模式 ☀️');
             }
         }
+
+        // 4. 黑洞点名器逻辑
+        const students = ["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十"];
+        let interval;
         
-        // 初始化
-        window.onload = function() {
-            createParticles();
-        };
+        function startBlackhole() {
+            const display = document.getElementById('nameDisplay');
+          clearInterval(interval); // 防止重复点击冲突
+
+            // 快速随机切换名字 (0.1秒一次)
+            interval = setInterval(() => {
+                const randomName = students[Math.floor(Math.random() * students.length)];
+                display.textContent = randomName;
+            }, 100);
+
+            // 2秒后停止
+            setTimeout(() => {
+                clearInterval(interval);
+                const finalName = students[Math.floor(Math.random() * students.length)];
+                display.innerHTML = `命运选择了： <strong style="color: #e74c3c;">${finalName}</strong>`;
+                showToast(`幸运儿是：${finalName}`);
+            }, 2000);
+        }
+
+        // 5. 页面加载完成初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 可以在这里添加启动动画
+            console.log("班级系统已启动，版本 1.0");
+        });
     </script>
 </body>
 </html>
