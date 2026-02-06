@@ -3,440 +3,374 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>班级态势感知系统</title>
-    
-    <!-- 引入用于图标的 Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>我们的班级小窝</title>
+    <!-- 引入手写字体 (可以通过 Google Fonts 或本地引入，这里用 Google 演示) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Serif+SC:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        /* === 全局重置与背景 === */
+        /* === 全局样式重置 === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* === 背景纹理 === */
+        /* 模拟米黄色的纸张/画布质感 */
         body { 
-            font-family: 'Arial', sans-serif; 
-            background: #000;
-            color: #0F0;
-            overflow: hidden; /* 禁止滚动条，保持全屏 */
-            cursor: default;
-        }
-        /* 模拟扫描线效果，增加复古科技感 */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, transparent, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 10000;
-            animation: scan 10s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100%; }
-        }
-
-        /* === 粒子背景容器 === */
-        #particles-js {
-            position: absolute; width: 100%; height: 100%; z-index: -1;
-            background-color: #000;
-        }
-
-        /* === 导航栏 === */
-        .navbar {
-            background: rgba(0, 20, 0, 0.8);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #0F0;
-            box-shadow: 0 0 10px #0F0;
-            backdrop-filter: blur(5px);
-        }
-        .nav-logo { color: #0F0; font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 5px #0F0; }
-        .nav-links button { 
-            background: #030; border: 1px solid #0F0; color: #0F0; 
-            margin-left: 10px; padding: 5px 10px; cursor: pointer; 
-            transition: 0.3s; font-size: 0.9rem;
-        }
-        .nav-links button:hover { background: #0F0; color: #000; box-shadow: 0 0 5px #0F0; }
-
-        /* === 仪表盘网格布局 === */
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            background: linear-gradient(to bottom, #fff9f0, #f0f8ff);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffebcd' fill-opacity='0.1'%3E%3Cpath d='M30 0h30v30H30V0zm0 30h30v30H30V30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            font-family: 'Noto Serif SC', 'PingFang SC', sans-serif;
+            color: #333;
+            min-height: 100vh;
             padding: 20px;
-            margin-top: 20px;
-        }
-
-        /* === 卡片样式 === */
-        .card {
-            background: rgba(0, 20, 0, 0.5);
-            border: 1px solid #0F0;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
+            overflow-x: hidden;
+        }
+
+        /* === 标题栏 === */
+        .header {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .header h1 {
+            font-family: 'Fredoka One', cursive; /* 圆润的手写体 */
+            font-size: 2.5em;
+            color: #ff6b6b;
+            text-shadow: 3px 3px 0px #ffe066, -1px -1px 0 #fff;
+            display: inline-block;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 20px;
+            border: 3px solid #ff9ff3;
+        }
+
+        /* === 装饰元素 (彩带/贴纸) === */
+        .decoration {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #74b9ff, #00b894);
+            border-radius: 50%;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        .deco1 { top: 10%; left: 10%; width: 150px; height: 150px; }
+        .deco2 { top: 30%; right: 5%; width: 100px; height: 100px; }
+        .deco3 { bottom: 20%; left: 15%; width: 120px; height: 120px; background: radial-gradient(circle, #fdcb6e, #e17055); }
+
+        /* === 导航按钮 (胶带风格) === */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            z-index: 1;
+            position: relative;
+        }
+        .nav-btn {
+            background: #74b9ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #34495e;
+            transition: 0.2s;
+            font-family: 'Fredoka One', cursive;
+            position: relative;
+            top: 0;
+        }
+        .nav-btn:active {
+            top: 2px;
+            box-shadow: 0 2px 0 #34495e;
+        }
+        .nav-btn.pink { background: #fd79a8; }
+        .nav-btn.green { background: #00b894; }
+
+        /* === 内容容器 (手账本风格) === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === 卡片网格 === */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        /* === 剪纸风格卡片 === */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 0 #ddd, /* 底部粗阴影模拟贴纸厚度 */
+                        0 4px 6px rgba(0,0,0,0.1);
+            border: 4px solid #ffeaa7; /* 浅黄色边框 */
+            position: relative;
+            transform: rotate(0deg);
+            transition: transform 0.3s;
             overflow: hidden;
         }
+
+        /* 随机旋转角度，模拟贴在墙上的杂乱感 */
+        .card:nth-child(odd) { transform: rotate(3deg); }
+        .card:nth-child(even) { transform: rotate(-2deg); }
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+            transform: rotate(0deg) scale(1.02);
+            z-index: 2;
         }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, transparent 70%);
-            transform: translateX(-150%) translateY(-150%) rotate(45deg);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        .card:hover::before {
-            opacity: 1;
-            transform: translateX(150%) translateY(150%) rotate(45deg);
+
+        /* 卡片头部装饰线 */
+        .card-header {
+            height: 8px;
+            border-radius: 4px;
+            margin: -20px -20px 20px -20px;
+            background: linear-gradient(to right, #74b9ff, #00b894, #fdcb6e, #ff7675);
         }
 
         .card h3 {
-            color: #0F0;
-            text-shadow: 0 0 2px #0F0;
-            margin-bottom: 10px;
+            font-size: 1.3em;
+            color: #2d3436;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
         }
-        .card h3 i { margin-right: 10px; }
-
-        /* === 跑马灯 (市场行情) === */
-        .ticker {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #0F0;
-            margin: 20px;
-            padding: 10px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            box-shadow: 0 0 5px #0F0 inset;
+        .card h3 i {
+            margin-right: 10px;
+            color: #6c5ce7;
         }
-        .ticker-item {
-            display: inline-block;
-            padding: 0 20px;
-            font-family: 'Courier New', monospace;
-        }
-        .positive { color: #0F0; }
-        .negative { color: #F00; }
 
-        /* === 黑洞点名全屏覆盖层 === */
-        #blackholeOverlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.9) 0%, #000 70%);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: #0F0;
+        /* === 通讯录头像 === */
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ddd;
+            margin-right: 15px;
+            flex-shrink: 0;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 0 #ddd;
+        }
+
+        /* === 点名大屏特化 === */
+        #rollCallScreen {
             text-align: center;
+            padding: 50px 20px;
         }
-        #blackholeOverlay h1 {
-            font-size: 5rem;
-            text-shadow: 0 0 20px #0F0;
-            animation: pulse 2s infinite;
+        #bigName {
+            font-family: 'Fredoka One', cursive;
+            font-size: 5em;
+            background: linear-gradient(45deg, #ff9ff3, #74b9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 0px #fff;
+            margin: 20px 0;
+            min-height: 120px;
         }
-        @keyframes pulse {
-            0% { text-shadow: 0 0 20px #0F0; }
-            50% { text-shadow: 0 0 30px #0F0, 0 0 40px #0F0; }
-            100% { text-shadow: 0 0 20px #0F0; }
-        }
-
-        /* === Toast 通知 (右上角) === */
-        #toastContainer {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 300px;
-        }
-        .toast {
-            background: rgba(0, 0, 0, 0.9);
-            color: #0F0;
-            padding: 15px 20px;
-            border: 1px solid #0F0;
-            border-radius: 5px;
-            box-shadow: 0 0 10px #0F0;
-            opacity: 0;
-            transform: translateX(100%);
-            animation: slideInToast 0.4s ease forwards, fadeOutToast 0.4s ease 2.6s forwards;
-        }
-        @keyframes slideInToast { to { opacity: 1; transform: translateX(0); } }
-        @keyframes fadeOutToast { to { opacity: 0; transform: translateX(100%); } }
-
-        /* === 加载动画 === */
-        .loading {
-            display: inline-block;
+        .confetti {
+            position: absolute;
             width: 10px;
             height: 10px;
-            background: #0F0;
-            border-radius: 50%;
-            margin-left: 10px;
-            animation: blink 1.4s infinite both;
+            background: #f39c12;
+            opacity: 0;
         }
-        .loading:nth-child(2) { animation-delay: 0.2s; }
-        .loading:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes blink {
-            0%, 80%, 100% { opacity: 0; }
-            40% { opacity: 1; }
+
+        /* === 响应式调整 === */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .nav { flex-direction: column; align-items: center; }
+            .nav-btn { width: 80%; margin: 5px 0; }
         }
     </style>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- 粒子背景 -->
-    <div id="particles-js"></div>
+    <!-- 装饰性气泡背景 -->
+    <div class="decoration deco1"></div>
+    <div class="decoration deco2"></div>
+    <div class="decoration deco3"></div>
 
-    <!-- 语音助手提示 -->
-    <div id="voiceHint" style="position: fixed; bottom: 20px; right: 20px; color: #0F0; font-size: 0.8rem; background: rgba(0,0,0,0.5); padding: 5px 10px; border: 1px solid #0F0; border-radius: 5px;">
-        语音状态: <span id="voiceStatus">离线</span>
+    <div class="header">
+        <h1>🌸 我们的班级小窝 🌸</h1>
+        <p style="text-align: center; margin-top: 10px; color: #636e72; font-size: 1.1em;">记录我们一起走过的青春时光</p>
     </div>
 
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="nav-logo"><i class="fas fa-terminal"></i> 班级态势感知系统 v2.0</div>
-        <div class="nav-links">
-            <button onclick="showToast('系统自检中...')"><i class="fas fa-sync"></i> 刷新</button>
-            <button onclick="startRollCall()"><i class="fas fa-user-secret"></i> 量子点名</button>
-            <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i> 暗黑模式</button>
-        </div>
-    </nav>
-
-    <!-- 市场行情跑马灯 -->
-    <div class="ticker" id="marketTicker">
-        <span class="ticker-item positive">张三 因作业全对 +50点声望</span>
-        <span class="ticker-item negative">李四 因迟到 -20点声望</span>
-        <span class="ticker-item positive">王五 解出难题 声望暴涨</span>
+    <!-- 导航 -->
+    <div class="nav">
+        <button class="nav-btn pink" onclick="showSection('home')">首页</button>
+        <button class="nav-btn green" onclick="showSection('contacts')">通讯录</button>
+        <button class="nav-btn" onclick="showSection('schedule')">课程表</button>
+        <button class="nav-btn pink" onclick="startRollCall()">随机点名</button>
     </div>
 
-    <!-- 仪表盘主体 -->
-    <div class="dashboard">
-        <!-- 卡片 1: 概览 -->
-        <div class="card">
-            <h3><i class="fas fa-chalkboard-teacher"></i> 班级概况</h3>
-            <p>总人数: <strong id="totalStudents">45</strong></p>
-            <p>今日出勤: <strong id="attendance">44/45</strong> (97.8%)</p>
-            <p>平均分: <strong id="avgScore">85.5</strong></p>
+    <div class="container">
+        <!-- 首页 -->
+        <div id="home" class="page">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header"></div>
+                    <h3><i class="fas fa-bullhorn"></i> 班级公告</h3>
+                    <p>下周三将举行春游活动，请大家准时集合！</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"></div>
+                    <h3><i class="fas fa-trophy"></i> 本周之星</h3>
+                    <p>恭喜 <strong>李四</strong> 同学获得本周“学习之星”称号！</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"></div>
+                    <h3><i class="fas fa-calendar"></i> 近期活动</h3>
+                    <p>• 3月12日 植树节活动 • 3月15日 月考</p>
+                </div>
+            </div>
         </div>
 
-        <!-- 卡片 2: 量子点名历史 -->
-        <div class="card">
-            <h3><i class="fas fa-history"></i> 最近点名记录</h3>
-            <ul id="rollCallLog" style="margin-top: 10px; color: #0F0;">
-                <li>上次点名: 张三 (08:00:02)</li>
-                <li>上上次: 李四 (07:55:43)</li>
-            </ul>
+        <!-- 通讯录 -->
+        <div id="contacts" class="page" style="display: none;">
+            <div class="grid">
+                <div class="card" style="display: flex; align-items: center;">
+                    <div class="avatar" style="background: #74b9ff;"></div>
+                    <div>
+                        <h3>张三 <span style="color: #636e72; font-size: 0.9em;">班长</span></h3>
+                        <p>电话: 138-0000-0000</p>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center;">
+                    <div class="avatar" style="background: #00b894;"></div>
+                    <div>
+                        <h3>李四 <span style="color: #636e72; font-size: 0.9em;">学习委员</span></h3>
+                        <p>电话: 138-0000-0001</p>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center;">
+                    <div class="avatar" style="background: #fdcb6e;"></div>
+                    <div>
+                        <h3>王五 <span style="color: #636e72; font-size: 0.9em;">体育委员</span></h3>
+                        <p>电话: 138-0000-0002</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- 卡片 3: AI 分析 -->
-        <div class="card">
-            <h3><i class="fas fa-robot"></i> AI 学情分析</h3>
-            <p id="aiReport">正在分析数据<span class="loading"></span></p>
+        <!-- 课程表 -->
+        <div id="schedule" class="page" style="display: none;">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(to right, #6c5ce7, #a29bfe);"></div>
+                    <h3><i class="fas fa-clock"></i> 星期一</h3>
+                    <p>1-2节: 语文 3-4节: 数学 5-6节: 英语</p>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(to right, #74b9ff, #0984e3);"></div>
+                    <h3><i class="fas fa-clock"></i> 星期二</h3>
+                    <p>1-2节: 物理 3-4节: 化学 5-6节: 体育</p>
+                </div>
+            </div>
         </div>
 
-        <!-- 卡片 4: 声望排行榜 -->
-        <div class="card">
-            <h3><i class="fas fa-award"></i> 声望排行榜</h3>
-            <ol id="rankList" style="margin-top: 10px; color: #0F0;">
-                <li>张三: 980分 (学霸)</li>
-                <li>王五: 950分 (智多星)</li>
-                <li>赵六: 920分 (守纪模范)</li>
-            </ol>
+        <!-- 点名屏幕 -->
+        <div id="rollCallScreen" style="display: none;">
+            <h2>谁是今天的幸运儿呢？</h2>
+            <div id="bigName">点击下方按钮开始</div>
+            <button class="nav-btn" onclick="startRollCall()">🎉 开始点名 🎉</button>
         </div>
     </div>
 
-    <!-- 全屏黑洞点名覆盖层 -->
-    <div id="blackholeOverlay">
-        <h1>正在锁定目标...</h1>
-        <p id="selectedName" style="font-size: 2rem; margin-top: 20px; color: #0ff;"></p>
-    </div>
-
-    <!-- Toast 容器 -->
-    <div id="toastContainer"></div>
-
-    <!-- 引入 Particles.js 库 (用于背景粒子) -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // === 全局配置 ===
-        const students = ["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十", "刘一", "陈二"];
-        let isDarkMode = false;
+        // 模拟数据
+        const students = ["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十"];
 
-        // === 1. 初始化粒子背景 ===
-        document.addEventListener('DOMContentLoaded', function() {
-            particlesJS('particles-js', {
-                particles: {
-                    number: { value: 80, density: { enable: true, value_area: 800 } },
-                    color: { value: '#0F0' },
-                    shape: { type: 'circle', stroke: { width: 0, color: '#000' }, polygon: { nb_sides: 5 } },
-                    opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
-                    size: { value: 3, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
-                    line_linked: { enable: true, distance: 150, color: '#0F0', opacity: 0.2, width: 1 },
-                    move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
-                },
-                interactivity: { detect_on: 'canvas', events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true } },
-                retina_detect: true
+        // 切换页面
+        function showSection(id) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
             });
-            // 初始化完成提示
-            setTimeout(() => showToast("系统初始化完成，欢迎接入"), 1000);
-            // 开始模拟数据更新
-            startSimulation();
-        });
-
-        // === 2. Toast 通知系统 ===
-        function showToast(message) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            document.getElementById(id).style.display = 'block';
         }
 
-        // === 3. 量子点名系统 (全屏动画) ===
+        // 随机点名逻辑
         function startRollCall() {
-            const overlay = document.getElementById('blackholeOverlay');
-            const nameDisplay = document.getElementById('selectedName');
+            // 切换到点名屏幕
+            showSection('rollCallScreen');
             
-            overlay.style.display = 'flex';
-            nameDisplay.textContent = '寻找目标中';
+            const nameDisplay = document.getElementById('bigName');
+            nameDisplay.textContent = '...';
             
+            // 播放音效 (如果需要，可以取消注释)
+            // const sound = new Audio('ding.mp3');
+            
+            // 快速滚动名字
             let count = 0;
             const interval = setInterval(() => {
                 nameDisplay.textContent = students[Math.floor(Math.random() * students.length)];
-            }, 100);
-
-            // 3秒后停止
-            setTimeout(() => {
-                clearInterval(interval);
-                const finalIndex = Math.floor(Math.random() * students.length);
-                const finalName = students[finalIndex];
-                nameDisplay.innerHTML = `锁定目标: <strong style="color: #ff6600; text-shadow: 0 0 10px #ff6600;">${finalName}</strong>`;
-                
-                // 添加到日志
-                const log = document.getElementById('rollCallLog');
-                const li = document.createElement('li');
-                li.textContent = `本次点名: ${finalName} (${new Date().toLocaleTimeString()})`;
-                log.prepend(li); // 插入到最前面
-                
-                // 自动隐藏
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                    showToast(`目标 ${finalName} 已锁定`);
-                }, 2000);
-            }, 3000);
-        }
-
-        // === 4. 暗黑模式切换 ===
-        function toggleDarkMode() {
-            isDarkMode = !isDarkMode;
-            if (isDarkMode) {
-                document.body.style.setProperty('color', '#000');
-                document.body.style.setProperty('background', '#000');
-                document.querySelectorAll('.card, .navbar').forEach(el => {
-                    el.style.background = 'rgba(0, 0, 0, 0.8)';
-                    el.style.border = '1px solid #666';
-                    el.style.color = '#000';
-                });
-                showToast("暗黑模式已激活");
-            } else {
-                // 恢复默认
-                document.body.removeAttribute('style');
-                document.querySelectorAll('.card, .navbar').forEach(el => {
-                    el.removeAttribute('style');
-                });
-                showToast("恢复经典模式");
-            }
-        }
-
-        // === 5. 模拟数据更新 (跑马灯、AI报告) ===
-        function startSimulation() {
-            // 模拟跑马灯更新
-            setInterval(() => {
-                const ticker = document.getElementById('marketTicker');
-                const change = (Math.random() * 20 - 10).toFixed(1);
-                const student = students[Math.floor(Math.random() * students.length)];
-                const action = Math.random() > 0.5 ? '因表现优异' : '因违纪';
-                const sign = parseFloat(change) >= 0 ? '+' : '';
-                
-                const span = document.createElement('span');
-                span.className = parseFloat(change) > 0 ? 'ticker-item positive' : 'ticker-item negative';
-                span.textContent = `${student} ${action} ${sign}${change}分`;
-                
-                ticker.appendChild(span);
-                
-                // 动画结束后移除
-                setTimeout(() => span.remove(), 5000);
-            }, 3000);
-
-            // 模拟 AI 报告生成
-            setInterval(() => {
-                const reports = [
-                    "检测到张三同学近期专注力提升明显",
-                    "预警：李四同学作业提交时间不稳定",
-                    "分析完成：本周数学平均分预计上涨",
-                    "系统优化：建议调整后排座位布局"
-                ];
-                document.getElementById('aiReport').textContent = reports[Math.floor(Math.random() * reports.length)];
-            }, 5000);
-        }
-
-        // === 6. 语音识别系统 (大胆的功能) ===
-        function initVoice() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                document.getElementById('voiceStatus').textContent = '浏览器不支持 (需Chrome)';
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'zh-CN';
-            recognition.continuous = true; // 连续监听
-            recognition.interimResults = false;
-
-            recognition.onstart = () => {
-                document.getElementById('voiceStatus').textContent = '在线 (说出指令)';
-            };
-
-            recognition.onresult = (event) => {
-                const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
-                console.log("语音指令:", transcript);
-
-                if (transcript.includes('点名')) {
-                    startRollCall();
-                } else if (transcript.includes('刷新') || transcript.includes('自检')) {
-                    showToast('正在执行系统自检...');
-                } else if (transcript.includes('暗黑')) {
-                    toggleDarkMode();
-                } else if (transcript.includes('你好')) {
-                    showToast('已唤醒，请下指令');
+                count++;
+                if (count > 15) { // 滚动15次后停止
+                    clearInterval(interval);
+                    const finalName = students[Math.floor(Math.random() * students.length)];
+                    nameDisplay.textContent = finalName;
+                    // 触发撒花
+                    createConfetti();
+                    showToast(`恭喜 ${finalName} 同学被选中！`);
                 }
-            };
-
-            recognition.onerror = (event) => {
-                console.error("语音错误:", event.error);
-            };
-
-            // 启动语音识别
-            recognition.start();
+            }, 100);
         }
 
-        // 页面加载完成后启动语音 (注意：部分浏览器需要用户手势才能启动麦克风)
-        // 这里为了演示，放在一个简单的点击后触发，或者直接尝试启动（可能会被拦截）
-        // 实际使用中，建议加一个“开启语音”按钮
-        // initVoice(); 
-    </script>
+        // 撒花特效
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+                confetti.style.backgroundColor = getRandomColor();
+                document.body.appendChild(confetti);
+                
+                // 动画
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0,0,0.2,1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
 
+        function getRandomColor() {
+            const colors = ['#ff7675', '#fdcb6e', '#ffeaa7', '#00b894', '#74b9ff', '#a29bfe'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // 简易的 Toast 提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+                background: white; color: #333; padding: 15px 30px; border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #ffeaa7;
+                z-index: 9999; font-weight: bold; text-align: center;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // 页面加载完成
+        window.onload = function() {
+            // 可以在这里添加欢迎动画
+            showToast('欢迎来到班级小窝！');
+        };
+    </script>
 </body>
 </html>
+
