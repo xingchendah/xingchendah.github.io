@@ -1,376 +1,634 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>我们的班级小窝</title>
-    <!-- 引入手写字体 (可以通过 Google Fonts 或本地引入，这里用 Google 演示) -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Serif+SC:wght@300;500&display=swap" rel="stylesheet">
-    <style>
-        /* === 全局样式重置 === */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* === 背景纹理 === */
-        /* 模拟米黄色的纸张/画布质感 */
-        body { 
-            background: linear-gradient(to bottom, #fff9f0, #f0f8ff);
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffebcd' fill-opacity='0.1'%3E%3Cpath d='M30 0h30v30H30V0zm0 30h30v30H30V30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            font-family: 'Noto Serif SC', 'PingFang SC', sans-serif;
-            color: #333;
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* === 标题栏 === */
-        .header {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
-            z-index: 1;
-        }
-        .header h1 {
-            font-family: 'Fredoka One', cursive; /* 圆润的手写体 */
-            font-size: 2.5em;
-            color: #ff6b6b;
-            text-shadow: 3px 3px 0px #ffe066, -1px -1px 0 #fff;
-            display: inline-block;
-            padding: 10px 20px;
-            background: white;
-            border-radius: 20px;
-            border: 3px solid #ff9ff3;
-        }
-
-        /* === 装饰元素 (彩带/贴纸) === */
-        .decoration {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #74b9ff, #00b894);
-            border-radius: 50%;
-            opacity: 0.2;
-            z-index: 0;
-        }
-        .deco1 { top: 10%; left: 10%; width: 150px; height: 150px; }
-        .deco2 { top: 30%; right: 5%; width: 100px; height: 100px; }
-        .deco3 { bottom: 20%; left: 15%; width: 120px; height: 120px; background: radial-gradient(circle, #fdcb6e, #e17055); }
-
-        /* === 导航按钮 (胶带风格) === */
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            z-index: 1;
-            position: relative;
-        }
-        .nav-btn {
-            background: #74b9ff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #34495e;
-            transition: 0.2s;
-            font-family: 'Fredoka One', cursive;
-            position: relative;
-            top: 0;
-        }
-        .nav-btn:active {
-            top: 2px;
-            box-shadow: 0 2px 0 #34495e;
-        }
-        .nav-btn.pink { background: #fd79a8; }
-        .nav-btn.green { background: #00b894; }
-
-        /* === 内容容器 (手账本风格) === */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* === 卡片网格 === */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            padding: 20px 0;
-        }
-
-        /* === 剪纸风格卡片 === */
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 0 #ddd, /* 底部粗阴影模拟贴纸厚度 */
-                        0 4px 6px rgba(0,0,0,0.1);
-            border: 4px solid #ffeaa7; /* 浅黄色边框 */
-            position: relative;
-            transform: rotate(0deg);
-            transition: transform 0.3s;
-            overflow: hidden;
-        }
-
-        /* 随机旋转角度，模拟贴在墙上的杂乱感 */
-        .card:nth-child(odd) { transform: rotate(3deg); }
-        .card:nth-child(even) { transform: rotate(-2deg); }
-        .card:hover {
-            transform: rotate(0deg) scale(1.02);
-            z-index: 2;
-        }
-
-        /* 卡片头部装饰线 */
-        .card-header {
-            height: 8px;
-            border-radius: 4px;
-            margin: -20px -20px 20px -20px;
-            background: linear-gradient(to right, #74b9ff, #00b894, #fdcb6e, #ff7675);
-        }
-
-        .card h3 {
-            font-size: 1.3em;
-            color: #2d3436;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .card h3 i {
-            margin-right: 10px;
-            color: #6c5ce7;
-        }
-
-        /* === 通讯录头像 === */
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #ddd;
-            margin-right: 15px;
-            flex-shrink: 0;
-            border: 3px solid #fff;
-            box-shadow: 0 2px 0 #ddd;
-        }
-
-        /* === 点名大屏特化 === */
-        #rollCallScreen {
-            text-align: center;
-            padding: 50px 20px;
-        }
-        #bigName {
-            font-family: 'Fredoka One', cursive;
-            font-size: 5em;
-            background: linear-gradient(45deg, #ff9ff3, #74b9ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 2px 2px 0px #fff;
-            margin: 20px 0;
-            min-height: 120px;
-        }
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #f39c12;
-            opacity: 0;
-        }
-
-        /* === 响应式调整 === */
-        @media (max-width: 768px) {
-            .header h1 { font-size: 1.8em; }
-            .nav { flex-direction: column; align-items: center; }
-            .nav-btn { width: 80%; margin: 5px 0; }
-        }
-    </style>
-    <!-- 引入图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-
-    <!-- 装饰性气泡背景 -->
-    <div class="decoration deco1"></div>
-    <div class="decoration deco2"></div>
-    <div class="decoration deco3"></div>
-
-    <div class="header">
-        <h1>🌸 我们的班级小窝 🌸</h1>
-        <p style="text-align: center; margin-top: 10px; color: #636e72; font-size: 1.1em;">记录我们一起走过的青春时光</p>
-    </div>
-
-    <!-- 导航 -->
-    <div class="nav">
-        <button class="nav-btn pink" onclick="showSection('home')">首页</button>
-        <button class="nav-btn green" onclick="showSection('contacts')">通讯录</button>
-        <button class="nav-btn" onclick="showSection('schedule')">课程表</button>
-        <button class="nav-btn pink" onclick="startRollCall()">随机点名</button>
-    </div>
-
-    <div class="container">
-        <!-- 首页 -->
-        <div id="home" class="page">
-            <div class="grid">
-                <div class="card">
-                    <div class="card-header"></div>
-                    <h3><i class="fas fa-bullhorn"></i> 班级公告</h3>
-                    <p>下周三将举行春游活动，请大家准时集合！</p>
-                </div>
-                <div class="card">
-                    <div class="card-header"></div>
-                    <h3><i class="fas fa-trophy"></i> 本周之星</h3>
-                    <p>恭喜 <strong>李四</strong> 同学获得本周“学习之星”称号！</p>
-                </div>
-                <div class="card">
-                    <div class="card-header"></div>
-                    <h3><i class="fas fa-calendar"></i> 近期活动</h3>
-                    <p>• 3月12日 植树节活动 • 3月15日 月考</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 通讯录 -->
-        <div id="contacts" class="page" style="display: none;">
-            <div class="grid">
-                <div class="card" style="display: flex; align-items: center;">
-                    <div class="avatar" style="background: #74b9ff;"></div>
-                    <div>
-                        <h3>张三 <span style="color: #636e72; font-size: 0.9em;">班长</span></h3>
-                        <p>电话: 138-0000-0000</p>
-                    </div>
-                </div>
-                <div class="card" style="display: flex; align-items: center;">
-                    <div class="avatar" style="background: #00b894;"></div>
-                    <div>
-                        <h3>李四 <span style="color: #636e72; font-size: 0.9em;">学习委员</span></h3>
-                        <p>电话: 138-0000-0001</p>
-                    </div>
-                </div>
-                <div class="card" style="display: flex; align-items: center;">
-                    <div class="avatar" style="background: #fdcb6e;"></div>
-                    <div>
-                        <h3>王五 <span style="color: #636e72; font-size: 0.9em;">体育委员</span></h3>
-                        <p>电话: 138-0000-0002</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 课程表 -->
-        <div id="schedule" class="page" style="display: none;">
-            <div class="grid">
-                <div class="card">
-                    <div class="card-header" style="background: linear-gradient(to right, #6c5ce7, #a29bfe);"></div>
-                    <h3><i class="fas fa-clock"></i> 星期一</h3>
-                    <p>1-2节: 语文 3-4节: 数学 5-6节: 英语</p>
-                </div>
-                <div class="card">
-                    <div class="card-header" style="background: linear-gradient(to right, #74b9ff, #0984e3);"></div>
-                    <h3><i class="fas fa-clock"></i> 星期二</h3>
-                    <p>1-2节: 物理 3-4节: 化学 5-6节: 体育</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 点名屏幕 -->
-        <div id="rollCallScreen" style="display: none;">
-            <h2>谁是今天的幸运儿呢？</h2>
-            <div id="bigName">点击下方按钮开始</div>
-            <button class="nav-btn" onclick="startRollCall()">🎉 开始点名 🎉</button>
-        </div>
-    </div>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>同学专属 · 新春快乐</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 字体图标 -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
     <script>
-        // 模拟数据
-        const students = ["张三", "李四", "王五", "赵六", "孙七", "周八", "吴九", "郑十"];
-
-        // 切换页面
-        function showSection(id) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.style.display = 'none';
-            });
-            document.getElementById(id).style.display = 'block';
-        }
-
-        // 随机点名逻辑
-        function startRollCall() {
-            // 切换到点名屏幕
-            showSection('rollCallScreen');
-            
-            const nameDisplay = document.getElementById('bigName');
-            nameDisplay.textContent = '...';
-            
-            // 播放音效 (如果需要，可以取消注释)
-            // const sound = new Audio('ding.mp3');
-            
-            // 快速滚动名字
-            let count = 0;
-            const interval = setInterval(() => {
-                nameDisplay.textContent = students[Math.floor(Math.random() * students.length)];
-                count++;
-                if (count > 15) { // 滚动15次后停止
-                    clearInterval(interval);
-                    const finalName = students[Math.floor(Math.random() * students.length)];
-                    nameDisplay.textContent = finalName;
-                    // 触发撒花
-                    createConfetti();
-                    showToast(`恭喜 ${finalName} 同学被选中！`);
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        youth: {
+                            red: '#E63946',     // 活力红
+                            gold: '#FFC300',    // 元气金
+                            pink: '#FF8FA3',    // 少女粉
+                            blue: '#457B9D',    // 清新蓝
+                            dark: '#1D3557',    // 深海蓝
+                            lightgold: '#FFF3CD'// 浅金色
+                        }
+                    },
+                    fontFamily: {
+                        youth: ['"Ma Shan Zheng"', 'STKaiti', 'sans-serif']
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'rotate-slow': 'rotate 8s linear infinite',
+                        'shake': 'shake 0.5s ease-in-out',
+                        'spin-fast': 'spin 1s linear',
+                        'pulse-glow': 'pulse 2s infinite',
+                        'gradient-flow': 'gradientFlow 8s ease infinite',
+                        'flip': 'flip 0.6s ease forwards'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'rotate(0deg)' },
+                            '25%': { transform: 'rotate(5deg)' },
+                            '75%': { transform: 'rotate(-5deg)' }
+                        },
+                        gradientFlow: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        },
+                        flip: {
+                            '0%': { transform: 'rotateY(0deg)' },
+                            '100%': { transform: 'rotateY(360deg)' }
+                        }
+                    }
                 }
-            }, 100);
+            }
         }
+    </script>
 
-        // 撒花特效
-        function createConfetti() {
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.left = Math.random() * window.innerWidth + 'px';
-                confetti.style.top = '-10px';
-                confetti.style.backgroundColor = getRandomColor();
-                document.body.appendChild(confetti);
-                
-                // 动画
-                const animation = confetti.animate([
-                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
-                    { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
-                ], {
-                    duration: Math.random() * 3000 + 2000,
-                    easing: 'cubic-bezier(0,0,0.2,1)'
-                });
-                
-                animation.onfinish = () => confetti.remove();
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-glow {
+                text-shadow: 0 0 8px theme('colors.youth.gold'), 0 0 20px theme('colors.youth.red');
+            }
+            .text-glow-hover {
+                transition: text-shadow 0.3s ease;
+            }
+            .text-glow-hover:hover {
+                text-shadow: 0 0 12px theme('colors.youth.gold'), 0 0 30px theme('colors.youth.red'), 0 0 40px theme('colors.youth.gold');
+            }
+            .bg-gradient-spring {
+                background: linear-gradient(135deg, #E63946 0%, #FFC300 50%, #457B9D 100%);
+                background-size: 200% 200%;
+            }
+            .mask-gradient {
+                mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            }
+            .card-3d {
+                transform-style: preserve-3d;
+                transition: transform 0.5s ease;
+            }
+            .card-3d:hover {
+                transform: perspective(1000px) rotateY(10deg) scale(1.02);
+                box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+            }
+            .confetti {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 100;
             }
         }
 
-        function getRandomColor() {
-            const colors = ['#ff7675', '#fdcb6e', '#ffeaa7', '#00b894', '#74b9ff', '#a29bfe'];
-            return colors[Math.floor(Math.random() * colors.length)];
+        /* 基础样式 */
+        body {
+            overflow-x: hidden;
+            background-color: #FFF8F0;
+            background-image: radial-gradient(#FFC30010 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        // 简易的 Toast 提示
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-                background: white; color: #333; padding: 15px 30px; border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #ffeaa7;
-                z-index: 9999; font-weight: bold; text-align: center;
-            `;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
+        /* 雪花/红包粒子样式 */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: all linear;
         }
 
-        // 页面加载完成
-        window.onload = function() {
-            // 可以在这里添加欢迎动画
-            showToast('欢迎来到班级小窝！');
+        /* 烟花容器 */
+        #fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* 背景动画 */
+        .bg-animate {
+            animation: bgShift 15s ease infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 10% 10%; }
+        }
+    </style>
+
+    <!-- 引入马善政字体（手写风格，适合同学祝福） -->
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen font-youth bg-animate">
+    <!-- 烟花容器 -->
+    <div id="fireworks-container"></div>
+    <!-- 彩纸屑容器 -->
+    <div id="confetti-container"></div>
+
+    <!-- 顶部装饰 -->
+    <header class="relative pt-8 pb-4 px-4">
+        <div class="flex justify-center items-center gap-4">
+            <!-- 动态灯笼 -->
+            <div class="lantern relative w-16 h-24 animate-float opacity-0" style="animation-delay: 0.2s">
+                <div class="absolute bottom-0 w-16 h-16 bg-youth-red rounded-t-full border-2 border-youth-gold shadow-lg"></div>
+                <div class="absolute top-4 left-1/2 -translate-x-1/2 w-10 h-12 bg-youth-red rounded-full border-2 border-youth-gold shadow-lg"></div>
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-8 bg-youth-dark"></div>
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-youth-gold text-lg font-bold text-glow">福</div>
+            </div>
+            
+            <!-- 主标题 -->
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] text-youth-red font-bold text-glow opacity-0 translate-y-8" id="main-title">
+                马年大吉 🧧
+            </h1>
+            
+            <!-- 动态灯笼 -->
+            <div class="lantern relative w-16 h-24 animate-float opacity-0" style="animation-delay: 0.5s">
+                <div class="absolute bottom-0 w-16 h-16 bg-youth-red rounded-t-full border-2 border-youth-gold shadow-lg"></div>
+                <div class="absolute top-4 left-1/2 -translate-x-1/2 w-10 h-12 bg-youth-red rounded-full border-2 border-youth-gold shadow-lg"></div>
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-8 bg-youth-dark"></div>
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-youth-gold text-lg font-bold text-glow">财</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 核心祝福卡片 -->
+    <main class="px-4 py-8 max-w-3xl mx-auto relative">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 border-4 border-youth-gold transform opacity-0 scale-90 card-3d" id="blessing-card">
+            <!-- 打字机效果祝福语 -->
+            <div class="text-[clamp(1.2rem,3vw,1.8rem)] text-youth-dark text-center leading-relaxed mb-6 min-h-[120px]" id="typing-text">
+                正在加载祝福...
+            </div>
+
+            <!-- 互动福字 -->
+            <div class="flex justify-center my-8">
+                <div class="w-32 h-32 bg-youth-red rounded-full flex items-center justify-center cursor-pointer border-4 border-youth-gold animate-bounce-slow hover:animate-shake relative overflow-hidden" id="fu-btn">
+                    <span class="text-6xl text-youth-gold font-bold text-glow-hover" id="fu-text">福</span>
+                    <!-- 福字光晕 -->
+                    <div class="absolute inset-0 rounded-full bg-youth-gold/20 animate-pulse-glow opacity-70"></div>
+                </div>
+            </div>
+
+            <!-- 同学专属祝福 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" id="blessing-items">
+                <div class="bg-youth-lightgold/30 p-4 rounded-xl border border-youth-gold/50 hover:scale-105 transition-all duration-300 card-3d opacity-0 translate-y-4" style="transition-delay: 0.1s">
+                    <p class="text-youth-dark"><i class="fa fa-star text-youth-gold mr-2"></i> 新的一年，逢考必过！</p>
+                </div>
+                <div class="bg-youth-lightgold/30 p-4 rounded-xl border border-youth-gold/50 hover:scale-105 transition-all duration-300 card-3d opacity-0 translate-y-4" style="transition-delay: 0.2s">
+                    <p class="text-youth-dark"><i class="fa fa-gamepad text-youth-blue mr-2"></i> 游戏连胜，不写作业！</p>
+                </div>
+                <div class="bg-youth-lightgold/30 p-4 rounded-xl border border-youth-gold/50 hover:scale-105 transition-all duration-300 card-3d opacity-0 translate-y-4" style="transition-delay: 0.3s">
+                    <p class="text-youth-dark"><i class="fa fa-money text-youth-gold mr-2"></i> 红包收到手软！</p>
+                </div>
+                <div class="bg-youth-lightgold/30 p-4 rounded-xl border border-youth-gold/50 hover:scale-105 transition-all duration-300 card-3d opacity-0 translate-y-4" style="transition-delay: 0.4s">
+                    <p class="text-youth-dark"><i class="fa fa-heart text-youth-pink mr-2"></i> 颜值飙升，桃花朵朵！</p>
+                </div>
+            </div>
+
+            <!-- 随机惊喜祝福语 -->
+            <div class="bg-gradient-spring animate-gradient-flow text-white p-4 rounded-xl text-center mb-8 opacity-0" id="surprise-text">
+                <p class="text-xl font-bold">✨ 专属好运签：天天开心，万事顺意！✨</p>
+            </div>
+
+            <!-- 署名区域 -->
+            <div class="text-center mt-8 opacity-0 transform translate-y-4" id="signature">
+                <p class="text-youth-red text-xl text-glow-hover">同学</p>
+                <p class="text-youth-dark mt-2">2026 · 新春快乐</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部彩蛋提示 + 版权信息 -->
+    <footer class="px-4 py-6 text-center text-youth-dark/70 relative">
+        <p class="text-glow-hover">点击福字有惊喜 🎉 | 双击全屏烟花 | 长按福字变色 | 愿我们的友谊岁岁年年</p>
+        <!-- 彩蛋计数 -->
+        <p class="mt-2 text-sm opacity-0" id="easter-egg-count">已解锁彩蛋: 0/4</p>
+        <!-- 版权信息 -->
+        <div class="mt-4 pt-4 border-t border-youth-gold/20 text-youth-dark/60 text-sm">
+            <p>© 2026 <span class="text-youth-red font-bold text-glow-hover">KCN不是KFC</span> 版权所有</p>
+        </div>
+    </footer>
+
+    <script>
+        // 彩蛋计数器
+        let easterEggs = {
+            clickFu: false,
+            doubleClick: false,
+            longPress: false,
+            scrollEnd: false
         };
+        
+        // 更新彩蛋计数
+        function updateEasterEggCount() {
+            const count = Object.values(easterEggs).filter(Boolean).length;
+            document.getElementById('easter-egg-count').classList.add('opacity-100', 'transition-opacity', 'duration-500');
+            document.getElementById('easter-egg-count').textContent = `已解锁彩蛋: ${count}/4`;
+            
+            // 全部解锁触发终极彩蛋
+            if (count === 4) {
+                setTimeout(() => {
+                    createSuperFirework(window.innerWidth/2, window.innerHeight/2);
+                    createConfetti(window.innerWidth/2, window.innerHeight/2, 300);
+                    alert('🎉 恭喜解锁全部彩蛋！\n新的一年，好运连连，福气满满！');
+                }, 500);
+            }
+        }
+
+        // 等待页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. 元素渐入动画
+            setTimeout(() => {
+                document.querySelectorAll('.lantern').forEach(el => {
+                    el.classList.add('opacity-100', 'transition-opacity', 'duration-1000');
+                });
+            }, 300);
+
+            setTimeout(() => {
+                document.getElementById('main-title').classList.add('opacity-100', 'translate-y-0', 'transition-all', 'duration-1000');
+            }, 800);
+
+            setTimeout(() => {
+                document.getElementById('blessing-card').classList.add('opacity-100', 'scale-100', 'transition-all', 'duration-1000');
+                
+                // 祝福项渐入
+                setTimeout(() => {
+                    document.querySelectorAll('#blessing-items > div').forEach(el => {
+                        el.classList.add('opacity-100', 'translate-y-0', 'transition-all', 'duration-500');
+                    });
+                    
+                    // 惊喜文字显示
+                    setTimeout(() => {
+                        document.getElementById('surprise-text').classList.add('opacity-100', 'transition-opacity', 'duration-1000');
+                    }, 500);
+                }, 500);
+            }, 1200);
+
+            setTimeout(() => {
+                document.getElementById('signature').classList.add('opacity-100', 'translate-y-0', 'transition-all', 'duration-1000');
+            }, 2000);
+
+            // 2. 打字机动效（随机切换祝福语）
+            const typingText = document.getElementById('typing-text');
+            const textsList = [
+                ["嘿，我的老同学！", "春节快乐呀 🎆", "愿新的一年里，", "我们吃好喝好，快乐不倒！", "学业up↑ 快乐up↑ 钱包up↑"],
+                ["马年到，福气到 🐴", "祝你新年超给力！", "烦恼全消，快乐狂飙！"],
+                ["新年新气象 ✨", "万事皆顺意，", "快乐不打烊！"]
+            ];
+            let currentTextSet = 0;
+            let textIndex = 0;
+            let charIndex = 0;
+            
+            function typeText() {
+                const texts = textsList[currentTextSet];
+                if (textIndex < texts.length) {
+                    if (charIndex < texts[textIndex].length) {
+                        typingText.innerHTML = texts[textIndex].substring(0, charIndex + 1);
+                        charIndex++;
+                        setTimeout(typeText, 120);
+                    } else {
+                        charIndex = 0;
+                        textIndex++;
+                        setTimeout(typeText, 800);
+                    }
+                } else {
+                    // 切换到下一组祝福语
+                    setTimeout(() => {
+                        currentTextSet = (currentTextSet + 1) % textsList.length;
+                        textIndex = 0;
+                        charIndex = 0;
+                        typingText.innerHTML = "";
+                        typeText();
+                    }, 3000);
+                }
+            }
+            setTimeout(typeText, 1500);
+
+            // 3. 粒子生成（雪花/红包/金币）
+            function createParticle(type) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机位置和大小
+                const size = Math.random() * 20 + 10;
+                const left = Math.random() * 100;
+                const duration = Math.random() * 8 + 5;
+                
+                // 设置粒子样式
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.top = `-${size}px`;
+                particle.style.opacity = '0';
+                particle.style.transitionDuration = `${duration}s`;
+                
+                // 不同类型粒子
+                if (type === 'snow') {
+                    particle.innerHTML = '<i class="fa fa-snowflake-o text-white text-xl" style="text-shadow: 0 0 5px #457B9D;"></i>';
+                } else if (type === 'redpacket') {
+                    particle.innerHTML = '<i class="fa fa-envelope text-youth-red text-xl" style="text-shadow: 0 0 5px #FFC300;"></i>';
+                } else {
+                    particle.innerHTML = '<i class="fa fa-coins text-youth-gold text-xl" style="text-shadow: 0 0 5px #FFC300;"></i>';
+                }
+                
+                document.body.appendChild(particle);
+                
+                // 粒子动画
+                setTimeout(() => {
+                    particle.style.opacity = '1';
+                    particle.style.top = '100vh';
+                    particle.style.left = `${left + Math.random() * 30 - 15}%`;
+                    particle.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    
+                    // 移除粒子
+                    setTimeout(() => {
+                        particle.remove();
+                    }, duration * 1000);
+                }, 100);
+            }
+
+            // 持续生成多种粒子
+            setInterval(() => createParticle('snow'), 400);
+            setInterval(() => createParticle('redpacket'), 900);
+            setInterval(() => createParticle('coin'), 1200);
+
+            // 4. 彩纸屑效果
+            function createConfetti(x, y, count = 100) {
+                const container = document.getElementById('confetti-container');
+                
+                for (let i = 0; i < count; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    
+                    // 随机样式
+                    const size = Math.random() * 8 + 4;
+                    const colors = ['#E63946', '#FFC300', '#457B9D', '#FF8FA3', '#FFFFFF', '#1D3557'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    confetti.style.backgroundColor = color;
+                    confetti.style.left = `${x}px`;
+                    confetti.style.top = `${y}px`;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    
+                    container.appendChild(confetti);
+                    
+                    // 彩纸屑动画
+                    setTimeout(() => {
+                        confetti.style.transition = `all ${Math.random() * 3 + 2}s ease-out`;
+                        confetti.style.opacity = '1';
+                        confetti.style.left = `${x + (Math.random() * 400 - 200)}px`;
+                        confetti.style.top = `${y + (Math.random() * 300 - 100)}px`;
+                        confetti.style.transform = `rotate(${Math.random() * 720}deg)`;
+                        
+                        // 移除彩纸屑
+                        setTimeout(() => {
+                            confetti.style.opacity = '0';
+                            setTimeout(() => confetti.remove(), 500);
+                        }, 3000);
+                    }, 10);
+                }
+            }
+
+            // 5. 烟花效果
+            function createFirework(x, y) {
+                const fireworksContainer = document.getElementById('fireworks-container');
+                const firework = document.createElement('div');
+                
+                // 烟花样式
+                firework.style.position = 'absolute';
+                firework.style.left = `${x}px`;
+                firework.style.top = `${y}px`;
+                firework.style.width = '4px';
+                firework.style.height = '4px';
+                firework.style.borderRadius = '50%';
+                firework.style.backgroundColor = '#FFC300';
+                firework.style.zIndex = '100';
+                
+                fireworksContainer.appendChild(firework);
+                
+                // 发射动画
+                setTimeout(() => {
+                    firework.style.transition = `all 1s ease-out`;
+                    firework.style.top = `${y - Math.random() * 200 - 100}px`;
+                    firework.style.left = `${x + Math.random() * 100 - 50}px`;
+                    firework.style.opacity = '0';
+                    
+                    // 爆炸效果
+                    setTimeout(() => {
+                        createExplosion(x, y - Math.random() * 200 - 100);
+                        firework.remove();
+                    }, 1000);
+                }, 10);
+            }
+
+            // 超级烟花效果（终极彩蛋）
+            function createSuperFirework(x, y) {
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        createFirework(
+                            x + (Math.random() * 600 - 300),
+                            y + (Math.random() * 400 - 200)
+                        );
+                    }, i * 100);
+                }
+            }
+
+            // 烟花爆炸
+            function createExplosion(x, y) {
+                const colors = ['#E63946', '#FFC300', '#457B9D', '#FF8FA3', '#FFFFFF', '#FF6B6B', '#4ECDC4'];
+                const fireworksContainer = document.getElementById('fireworks-container');
+                
+                // 创建爆炸粒子
+                for (let i = 0; i < 150; i++) {
+                    const particle = document.createElement('div');
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 100 + 30;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    particle.style.position = 'absolute';
+                    particle.style.left = `${x}px`;
+                    particle.style.top = `${y}px`;
+                    particle.style.width = `${Math.random() * 6 + 2}px`;
+                    particle.style.height = `${Math.random() * 6 + 2}px`;
+                    particle.style.borderRadius = '50%';
+                    particle.style.backgroundColor = color;
+                    particle.style.opacity = '1';
+                    particle.style.transition = `all ${Math.random() * 1.5 + 0.5}s ease-out`;
+                    
+                    fireworksContainer.appendChild(particle);
+                    
+                    // 爆炸动画
+                    setTimeout(() => {
+                        particle.style.left = `${x + Math.cos(angle) * distance}px`;
+                        particle.style.top = `${y + Math.sin(angle) * distance}px`;
+                        particle.style.opacity = '0';
+                        particle.style.transform = `scale(${Math.random() * 2 + 1})`;
+                        
+                        // 移除粒子
+                        setTimeout(() => {
+                            particle.remove();
+                        }, 2000);
+                    }, 10);
+                }
+            }
+
+            // 6. 福字交互事件
+            const fuBtn = document.getElementById('fu-btn');
+            const fuText = document.getElementById('fu-text');
+            let longPressTimer = null;
+            let isFuPressed = false;
+            
+            // 点击福字
+            fuBtn.addEventListener('click', function(e) {
+                if (!easterEggs.clickFu) {
+                    easterEggs.clickFu = true;
+                    updateEasterEggCount();
+                }
+                
+                // 播放音效
+                try {
+                    const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-fireworks-explosion-1769.mp3');
+                    audio.volume = 0.5;
+                    audio.play();
+                } catch (e) {}
+                
+                // 生成多个烟花
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        createFirework(
+                            e.clientX + (Math.random() * 200 - 100),
+                            e.clientY + (Math.random() * 200 - 100)
+                        );
+                    }, i * 150);
+                }
+                
+                // 彩纸屑效果
+                createConfetti(e.clientX, e.clientY);
+                
+                // 福字动画
+                fuText.classList.add('animate-spin-fast');
+                this.classList.add('animate-shake');
+                
+                setTimeout(() => {
+                    fuText.classList.remove('animate-spin-fast');
+                    this.classList.remove('animate-shake');
+                    
+                    // 随机切换福字样式
+                    const fuTexts = ['福', '禄', '寿', '喜', '财'];
+                    fuText.textContent = fuTexts[Math.floor(Math.random() * fuTexts.length)];
+                }, 800);
+                
+                // 随机祝福语弹窗
+                const surprises = [
+                    '恭喜发财，红包拿来！🧧\n新的一年，我们都要超棒的！',
+                    '马年行大运，万事皆顺意！🐴\n考试全过，游戏连胜！',
+                    '新年快乐呀！🥳\n愿我们的友谊长长久久！',
+                    '新岁启封，美好常在 ✨\n吃好喝好，快乐不倒！',
+                    '福气满满，好运连连 🎊\n颜值UP，快乐UP！'
+                ];
+                alert(surprises[Math.floor(Math.random() * surprises.length)]);
+            });
+            
+            // 长按福字变色（彩蛋2）
+            fuBtn.addEventListener('mousedown', function() {
+                longPressTimer = setTimeout(() => {
+                    if (!easterEggs.longPress) {
+                        easterEggs.longPress = true;
+                        updateEasterEggCount();
+                    }
+                    
+                    isFuPressed = true;
+                    // 渐变变色效果
+                    const colors = ['#FFC300', '#FF8FA3', '#457B9D', '#FFFFFF', '#E63946'];
+                    let colorIndex = 0;
+                    
+                    const colorInterval = setInterval(() => {
+                        if (!isFuPressed) {
+                            clearInterval(colorInterval);
+                            fuText.style.color = '#FFC300';
+                            return;
+                        }
+                        
+                        colorIndex = (colorIndex + 1) % colors.length;
+                        fuText.style.color = colors[colorIndex];
+                    }, 100);
+                }, 1000);
+            });
+            
+            fuBtn.addEventListener('mouseup', function() {
+                clearTimeout(longPressTimer);
+                isFuPressed = false;
+            });
+            
+            fuBtn.addEventListener('mouseleave', function() {
+                clearTimeout(longPressTimer);
+                isFuPressed = false;
+            });
+
+            // 7. 双击页面触发全屏烟花（彩蛋3）
+            let lastClickTime = 0;
+            document.addEventListener('click', function(e) {
+                const currentTime = new Date().getTime();
+                const clickDelay = currentTime - lastClickTime;
+                
+                if (clickDelay < 300 && clickDelay > 0 && e.target.id !== 'fu-btn') {
+                    // 双击触发
+                    if (!easterEggs.doubleClick) {
+                        easterEggs.doubleClick = true;
+                        updateEasterEggCount();
+                    }
+                    
+                    createSuperFirework(e.clientX, e.clientY);
+                    createConfetti(e.clientX, e.clientY, 200);
+                }
+                
+                lastClickTime = currentTime;
+                
+                // 单击普通烟花
+                if (e.target.id !== 'fu-btn' && clickDelay >= 300) {
+                    setTimeout(() => {
+                        createFirework(e.clientX, e.clientY);
+                    }, Math.random() * 500);
+                }
+            });
+
+            // 8. 滚动到底部触发彩蛋4
+            window.addEventListener('scroll', function() {
+                const scrollHeight = document.documentElement.scrollHeight;
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const clientHeight = document.documentElement.clientHeight;
+                
+                if (scrollTop + clientHeight >= scrollHeight - 20 && !easterEggs.scrollEnd) {
+                    easterEggs.scrollEnd = true;
+                    updateEasterEggCount();
+                    
+                    // 触发彩蛋效果
+                    createConfetti(window.innerWidth/2, window.innerHeight/2);
+                    alert('🎊 发现隐藏彩蛋！\n新的一年，学业进步，快乐无忧！');
+                }
+            });
+        });
     </script>
 </body>
 </html>
-
